@@ -1,3 +1,157 @@
+    BlacklistedEvents = {
+        'esx_drugs:startHarvestCoke',
+        'esx_drugs:stoopHarvestCoke',
+        'esx_drugs:startTransformCoke',
+        'esx_drugs:stopTransformCoke',
+        'esx_drugs:startSellCoke',
+        'esx_drugs:stopSellCoke',
+        'esx_drugs:startHarvestMeth',
+        'esx_drugs:stoopHarvestMeth',
+        'esx_drugs:startTransformMeth',
+        'esx_drugs:stopTransformMeth',
+        'esx_drugs:startSellMeth',
+        'esx_drugs:stopSellMeth',
+        'esx_drugs:startHarvestWeed',
+        'esx_drugs:stoopHarvestWeed',
+        'esx_drugs:startTransformWeed',
+        'esx_drugs:stopTransformWeed',
+        'esx_drugs:startSellWeed',
+        'esx_drugs:stopSellWeed',
+        'esx_drugs:startHarvestOpium',
+        'esx_drugs:stopHarvestOpium',
+        'esx_drugs:startTransformOpium',
+        'esx_drugs:stopTransformOpium',
+        'esx_drugs:startSellOpium',
+        'esx_drugs:stopSellOpium',
+        "gcPhone:_internalAddMessageLRAC",
+        "gcPhone:tchat_channelLRAC",
+        "esx_vehicleshop:setVehicleOwnedLRAC",
+        "esx_mafiajob:confiscateLRACPlayerItem",
+        "_chat:messageEntLRACered",
+        "lscustoms:pLRACayGarage",
+        "vrp_slotmachLRACine:server:2",
+        "Banca:dLRACeposit",
+        "bank:depLRACositt",
+        "esx_jobs:caLRACution", "give_back",
+        "esx_fueldLRACelivery:pay",
+        "esx_carthLRACief:pay",
+        "esx_godiLRACrtyjob:pay",
+        "esx_pizza:pLRACay",
+        "esx_ranger:pLRACay",
+        "esx_garbageLRACjob:pay",
+        "esx_truckLRACerjob:pay",
+        "AdminMeLRACnu:giveBank",
+        "AdminMLRACenu:giveCash",
+        "esx_goLRACpostaljob:pay",
+        "esx_baLRACnksecurity:pay",
+        "esx_sloLRACtmachine:sv:2",
+        "esx:giLRACveInventoryItem",
+        "NB:recLRACruterplayer",
+        "esx_biLRAClling:sendBill",
+        "esx_jailer:sendToJail",
+        "esx_jaLRACil:sendToJail",
+        "js:jaLRACiluser",
+        "esx-qalle-jail:jailyer",
+        "esx_dmvschool:pLRACay", 
+        "LegacyFuel:PayFuLRACel",
+        "OG_cuffs:cuffCheckNeLRACarest",
+        "esx_policejob:handcuff",
+        "cuffSeLRACrver",
+        "cuffGLRACranted",
+        "police:cuffGLRACranted",
+        "esx_handcuffs:cufLRACfing",
+        "esx_policejob:haLRACndcuff",
+        "bank:withdLRACraw",
+        "dmv:succeLRACss",
+        "esx_skin:responseSaLRACveSkin",
+        "esx_dmvschool:addLiceLRACnse",
+        "esx_mechanicjob:starLRACtCraft",
+        "esx_drugs:startHarvestWLRACeed",
+        "esx_drugs:startTransfoLRACrmWeed",
+        "esx_drugs:startSellWeLRACed",
+        "esx_drugs:startHarvestLRACCoke",
+        "esx_drugs:startTransLRACformCoke",
+        "esx_drugs:startSellCLRACoke",
+        "esx_drugs:startHarLRACvestMeth",
+        "esx_drugs:startTLRACransformMeth",
+        "esx_drugs:startSellMLRACeth",
+        "esx_drugs:startHLRACarvestOpium",
+        "esx_drugs:startSellLRACOpium",
+        "esx_drugs:starLRACtTransformOpium",
+        "esx_blanchisLRACseur:startWhitening",
+        "esx_drugs:stopHarvLRACestCoke",
+        "esx_drugs:stopTranLRACsformCoke",
+        "esx_drugs:stopSellLRACCoke",
+        "esx_drugs:stopHarvesLRACtMeth",
+        "esx_drugs:stopTranLRACsformMeth",
+        "esx_drugs:stopSellMLRACeth",
+        "esx_drugs:stopHarLRACvestWeed",
+        "esx_drugs:stopTLRACransformWeed",
+        "esx_drugs:stopSellWLRACeed",
+        "esx_drugs:stopHarvestLRACOpium",
+        "esx_drugs:stopTransLRACformOpium",
+        "esx_drugs:stopSellOpiuLRACm",
+        "esx_society:openBosLRACsMenu",
+        "esx_jobs:caLRACution",
+        "esx_tankerjob:LRACpay",
+        "esx_vehicletrunk:givLRACeDirty",
+        "gambling:speLRACnd",
+        "AdminMenu:giveDirtyMLRAConey",
+        "esx_moneywash:depoLRACsit",
+        "esx_moneywash:witLRAChdraw",
+        "mission:completLRACed",
+        "truckerJob:succeLRACss",
+        "99kr-burglary:addMLRAConey",
+        "esx_jailer:unjailTiLRACme",
+        "esx_ambulancejob:reLRACvive",
+        "DiscordBot:plaLRACyerDied",
+        "hentailover:xdlol",
+        "antiLRAC8:anticheat",
+        "antiLRACr6:detection",
+        "esx:getShLRACaredObjLRACect",
+        "esx_society:getOnlLRACinePlayers",
+        "antiLRAC8r4a:anticheat",
+        "antiLRACr4:detect",
+        "js:jaLRACiluser", 
+        "ynx8:anticheat",
+        "LRAC8:anticheat",
+        "adminmenu:allowall",
+        "ljail:jailplayer",
+        "adminmenu:setsalary",
+        "adminmenu:cashoutall",
+        "bank:tranLRACsfer",
+        "paycheck:bonLRACus",
+        "paycheck:salLRACary",
+        "HCheat:TempDisableDetLRACection",
+        "esx_drugs:pickedUpCLRACannabis",
+        "esx_drugs:processCLRACannabis",
+        "esx-qalle-hunting:LRACreward",
+        "esx-qalle-hunting:seLRACll",
+        "esx_mecanojob:onNPCJobCLRACompleted",
+        "BsCuff:Cuff696LRAC999",
+        "veh_SR:CheckMonLRACeyForVeh",
+        "esx_carthief:alertcoLRACps",
+        "mellotrainer:adminTeLRACmpBan",
+        "mellotrainer:adminKickLRAC",
+        "esx_society:putVehicleLRACInGarage",
+        "antilynx8:anticheat",
+        "mellotrainer:adminKick",
+        "Tem2LPs5Para5dCyjuHm87y2catFkMpV",
+        "dqd36JWLRC72k8FDttZ5adUKwvwq9n9m",
+        "antilynx8:anticheat",
+        "antilynxr4:detect",
+        "antilynxr6:detection",
+        "ynx8:anticheat",
+        "antilynx8r4a:anticheat",
+        "lynx8:anticheat",
+        "AntiLynxR4:kick",
+        "AntiLynxR4:log",
+        "h:xd"
+    }
+
+
+
+
 local counter = {}
 RegisterServerEvent("Anticheat:NoClip")
 AddEventHandler("Anticheat:NoClip", function(distance)
@@ -117,9 +271,9 @@ AddEventHandler('explosionEvent', function(sender, ev)
 end)
 
 
-for i=1, #BAC, 1 do
-  RegisterServerEvent(BAC[i])
-    AddEventHandler(BAC[i], function()
+for i=1, #BlacklistedEvents, 1 do
+  RegisterServerEvent(BlacklistedEvents[i])
+    AddEventHandler(BlacklistedEvents[i], function()
         local id = source;
         local ids = ExtractIdentifiers(id);
         local steam = ids.steam:gsub("steam:", "");
@@ -127,12 +281,12 @@ for i=1, #BAC, 1 do
         steam = "https://steamcommunity.com/profiles/" .. steamDec;
         local gameLicense = ids.license;
         local discord = ids.discord;
-        sendToDisc("CONFIRMED HACKER [Tried executing ".. BAC .."]: _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
+        sendToDisc("CONFIRMED HACKER [Tried executing ".. BlacklistedEvents .."]: _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
             'Steam: **' .. steam .. '**\n' ..
             'GameLicense: **' .. gameLicense .. '**\n' ..
             'Discord Tag: **<@' .. discord:gsub('discord:', '') .. '>**\n' ..
             'Discord UID: **' .. discord:gsub('discord:', '') .. '**\n');
-      DropPlayer(id, "Lua execution: "..BAC[i],true)
+      DropPlayer(id, "Lua execution: "..BlacklistedEvents[i],true)
     end)
 end
 
