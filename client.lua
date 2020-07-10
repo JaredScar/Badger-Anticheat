@@ -33,7 +33,7 @@ end)
 --[[]]--
 -- Props to Anticheese Anticheat for this: [https://github.com/Bluethefurry]
 Citizen.CreateThread(function()
-    Citizen.Wait(60000)
+    Citizen.Wait(30000)
     while true do
         Citizen.Wait(0)
         local ped = PlayerPedId()

@@ -1,3 +1,4 @@
+local counter = {}
 RegisterServerEvent("Anticheat:NoClip")
 AddEventHandler("Anticheat:NoClip", function(distance)
     if not IsPlayerAceAllowed(source, "Anticheat.Bypass") then
@@ -6,15 +7,24 @@ AddEventHandler("Anticheat:NoClip", function(distance)
         local ids = ExtractIdentifiers(id);
         local steam = ids.steam:gsub("steam:", "");
         local steamDec = tostring(tonumber(steam,16));
-        steam = "https://steamcommunity.com/profiles/" .. steamDec;
-        local gameLicense = ids.license;
-        local discord = ids.discord;
-        sendToDisc("CONFIRMED HACKER [Noclipping around]: _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
-            'Steam: **' .. steam .. '**\n' ..
-            'GameLicense: **' .. gameLicense .. '**\n' ..
-            'Discord Tag: **<@' .. discord:gsub('discord:', '') .. '>**\n' ..
-            'Discord UID: **' .. discord:gsub('discord:', '') .. '**\n');
-        DropPlayer(id, "[MODDER CAUGHT]: Why you no-clipping and not staff? Stoopid ass hoe")
+        if counter[ids.steam] ~= nil then 
+            counter[ids.steam] = counter[ids.steam] + 1;
+        else 
+            counter[ids.steam] = 1;
+        end
+        if counter[ids.steam] ~= nil and counter[ids.steam] >= Config.NoClipTriggerCount then 
+            steam = "https://steamcommunity.com/profiles/" .. steamDec;
+            local gameLicense = ids.license;
+            local discord = ids.discord;
+            sendToDisc("CONFIRMED HACKER [Noclipping around]: _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
+                'Steam: **' .. steam .. '**\n' ..
+                'GameLicense: **' .. gameLicense .. '**\n' ..
+                'Discord Tag: **<@' .. discord:gsub('discord:', '') .. '>**\n' ..
+                'Discord UID: **' .. discord:gsub('discord:', '') .. '**\n');
+            DropPlayer(id, "[MODDER CAUGHT]: Why you no-clipping and not staff? Stoopid ass hoe")
+        end 
+        Wait(6000);
+        counter[ids.steam] = counter[ids.steam] - 1;
     end
 end)
 

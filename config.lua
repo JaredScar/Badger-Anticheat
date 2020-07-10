@@ -1,6 +1,7 @@
 Config = {
     Webhook = '',
     TowTruckDrivers = {'S_M_M_TRUCKER_01', 'MP_M_WAREMECH_01'},
+    NoClipTriggerCount = 3,
     BlacklistedModels = {
         "rhino",
         "stt_prop_stunt_track_uturn",
