@@ -116,6 +116,26 @@ AddEventHandler('explosionEvent', function(sender, ev)
     end
 end)
 
+
+for i=1, #BAC, 1 do
+  RegisterServerEvent(BAC[i])
+    AddEventHandler(BAC[i], function()
+        local id = source;
+        local ids = ExtractIdentifiers(id);
+        local steam = ids.steam:gsub("steam:", "");
+        local steamDec = tostring(tonumber(steam,16));
+        steam = "https://steamcommunity.com/profiles/" .. steamDec;
+        local gameLicense = ids.license;
+        local discord = ids.discord;
+        sendToDisc("CONFIRMED HACKER [Tried executing ".. BAC .."]: _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
+            'Steam: **' .. steam .. '**\n' ..
+            'GameLicense: **' .. gameLicense .. '**\n' ..
+            'Discord Tag: **<@' .. discord:gsub('discord:', '') .. '>**\n' ..
+            'Discord UID: **' .. discord:gsub('discord:', '') .. '**\n');
+      DropPlayer(id, "Lua execution: "..BAC[i],true)
+    end)
+end
+
 AddEventHandler("entityCreating",  function(entity)
     local owner = GetEntityOwner(entity)
     local cancelled = false
