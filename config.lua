@@ -5,7 +5,8 @@ Config = {
          AntiSpectate = true,
          AntiTeleport = true,
          AntiFakeMessage = true,
-         AntiBlacklistedEvents = true
+         AntiBlacklistedEvents = true,
+         AntiNoclip = true
     },
     BlacklistedEvents = {
         'esx_drugs:startHarvestCoke',
