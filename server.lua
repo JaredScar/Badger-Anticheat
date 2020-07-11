@@ -1,5 +1,7 @@
 BlacklistedEvents = Config.BlacklistedEvents;
 
+webhookURL = ''
+
 local counter = {}
 RegisterServerEvent("Anticheat:NoClip")
 AddEventHandler("Anticheat:NoClip", function(distance)
@@ -195,7 +197,7 @@ function ExtractIdentifiers(src)
 
     return identifiers
 end
-webhookURL = Config.Webhook;
+
 function sendToDisc(title, message, footer)
     local embed = {}
     embed = {
