@@ -98,7 +98,8 @@ AddEventHandler('chatMessage', function(source, name, msg)
             'Steam: **' .. steam .. '**\n' ..
             'GameLicense: **' .. gameLicense .. '**\n' ..
             'Discord Tag: **<@' .. discord:gsub('discord:', '') .. '>**\n' ..
-            'Discord UID: **' .. discord:gsub('discord:', '') .. '**\n');
+            'Discord UID: **' .. discord:gsub('discord:', '') .. '**\n'
+            .. 'Tried to say: `' .. msg .. '` with name `' .. name .. '`');
         DropPlayer(id, "[MODDER CAUGHT]: Why you tryna be someone else? Stoopid ass hoe")
     end
 end)
