@@ -1,6 +1,7 @@
 
 -- prevent infinite ammo, godmode, invisibility and ped speed hacks 
 -- Props to Anticheese Anticheat for this: [https://github.com/Bluethefurry]
+if Config.Components.Anticheat then
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(1)
@@ -32,6 +33,7 @@ Citizen.CreateThread(function()
 end)
 --[[]]--
 -- Props to Anticheese Anticheat for this: [https://github.com/Bluethefurry]
+if Config.Components.AntiSpeedhack then
 Citizen.CreateThread(function()
     Citizen.Wait(30000)
     while true do

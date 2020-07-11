@@ -5,7 +5,7 @@ webhookURL = ''
 local counter = {}
 RegisterServerEvent("Anticheat:NoClip")
 AddEventHandler("Anticheat:NoClip", function(distance)
-    if not IsPlayerAceAllowed(source, "Anticheat.Bypass") then
+    if Config.Components.AntiNoclip and not IsPlayerAceAllowed(source, "Anticheat.Bypass") then
         local name = GetPlayerName(source)
         local id = source;
         local ids = ExtractIdentifiers(id);
@@ -67,7 +67,7 @@ end
 
 RegisterNetEvent("Anticheat:SpectateTrigger")
 AddEventHandler("Anticheat:SpectateTrigger", function(reason)
-    if not IsPlayerAceAllowed(source, "Anticheat.Bypass") then 
+    if Config.Components.AntiSpectate and not IsPlayerAceAllowed(source, "Anticheat.Bypass") then 
         local id = source;
         local ids = ExtractIdentifiers(id);
         local steam = ids.steam:gsub("steam:", "");
@@ -125,6 +125,7 @@ end)
 for i=1, #BlacklistedEvents, 1 do
   RegisterServerEvent(BlacklistedEvents[i])
     AddEventHandler(BlacklistedEvents[i], function()
+            if Config.Components.AntiNoclip and not
         local id = source;
         local ids = ExtractIdentifiers(id);
         local steam = ids.steam:gsub("steam:", "");
