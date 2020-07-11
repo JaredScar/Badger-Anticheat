@@ -4,7 +4,6 @@ Config = {
     Components = {
          AntiSpectate = true,
          AntiTeleport = true,
-         AntiBlacklistedEvents = true,
          AntiNoclip = true
     },
     BlacklistedEvents = {
