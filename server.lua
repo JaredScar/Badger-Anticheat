@@ -125,7 +125,6 @@ end)
 for i=1, #BlacklistedEvents, 1 do
   RegisterServerEvent(BlacklistedEvents[i])
     AddEventHandler(BlacklistedEvents[i], function()
-            if Config.Components.AntiNoclip and not
         local id = source;
         local ids = ExtractIdentifiers(id);
         local steam = ids.steam:gsub("steam:", "");
