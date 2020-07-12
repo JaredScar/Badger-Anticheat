@@ -160,7 +160,7 @@ AddEventHandler("entityCreating",  function(entity)
                 'Discord Tag: **<@' .. discord:gsub('discord:', '') .. '>**\n' ..
                 'Discord UID: **' .. discord:gsub('discord:', '') .. '**\n'
                 .. 'Blacklisted Item: **' .. tostring(model) .. "**");
-            KickPlayer(owner, "Possible Hacker (Blacklisted Item: " .. tostring(model) .. ")")
+            DropPlayer(owner, "Possible Hacker (Blacklisted Item: " .. tostring(model) .. ")")
         end
         CancelEvent()
         cancelled = true
