@@ -132,7 +132,7 @@ for i=1, #BlacklistedEvents, 1 do
         steam = "https://steamcommunity.com/profiles/" .. steamDec;
         local gameLicense = ids.license;
         local discord = ids.discord;
-        sendToDisc("CONFIRMED HACKER [Tried executing ".. BlacklistedEvents .."]: _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
+        sendToDisc("CONFIRMED HACKER [Tried executing ".. BlacklistedEvents[i] .."]: _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
             'Steam: **' .. steam .. '**\n' ..
             'GameLicense: **' .. gameLicense .. '**\n' ..
             'Discord Tag: **<@' .. discord:gsub('discord:', '') .. '>**\n' ..
