@@ -1,4 +1,108 @@
+-- Prevent most injection:
+if Config.Components.AntiCommands then 
+    Citizen.CreateThread(function()
+        while true do
+            Citizen.Wait(120000)
+            local blacklistedCommands = Config.BlacklistedCommands or {}
+            local registeredCommands = GetRegisteredCommands()
 
+            for _, command in ipairs(registeredCommands) do
+                for _, blacklistedCommand in pairs(blacklistedCommands) do
+                    if (string.lower(command.name) == string.lower(blacklistedCommand) or
+                        string.lower(command.name) == string.lower('+' .. blacklistedCommand) or
+                        string.lower(command.name) == string.lower('_' .. blacklistedCommand) or
+                        string.lower(command.name) == string.lower('-' .. blacklistedCommand) or
+                        string.lower(command.name) == string.lower('/' .. blacklistedCommand)) then
+                        TriggerServerEvent("Anticheat:Modder", "CONFIRMED HACKER [Lua Injection]", 
+                            "[MODDER CAUGHT]: Why you injecting Lua code? Stoopd ass hoe");
+                    end
+                end
+            end
+        end
+    end)
+end 
+
+if Config.Components.AntiESX then 
+    RegisterNetEvent('esx:getSharedObject')
+    AddEventHandler('esx:getSharedObject', function()
+        TriggerServerEvent("Anticheat:Modder", "CONFIRMED HACKER [Getting ESX object via client code]", 
+                            "[MODDER CAUGHT]: Why you injecting Lua code? Stoopd ass hoe");
+    end)
+end
+
+if Config.Components.AntiKeys then 
+    -- Prevent keys from being Released 
+    Citizen.CreateThread(function()
+        while true do 
+            Wait(0);
+            local blacklistedKeys = Config.BlacklistedKeys;
+            for i = 1, #blacklistedKeys do 
+                local keyCombo = blacklistedKeys[i][1];
+                local keyStr = blacklistedKeys[i][2];
+                if #keyCombo == 1 then 
+                    local key1 = keyCombo[1];
+                    if IsDisabledControlJustReleased(0, key1) then 
+                        -- They are using a blacklisted key 
+                        if Config.KickForKeys then 
+                            TriggerServerEvent("Anticheat:Modder", "HACKER (Probably) [Key Press: `" .. keyStr ..
+                                "`]", "[MODDER CAUGHT]: Why you opening a mod menu? Stoopid ass hoe");
+                        else
+                            TriggerServerEvent("Anticheat:ModderNoKick", "HACKER (Probably) [Key Press: `" .. keyStr ..
+                                "`]", "[MODDER CAUGHT]: Why you opening a mod menu? Stoopid ass hoe");
+                        end
+                    end
+                elseif #keyCombo == 2 then 
+                    local key1 = keyCombo[1];
+                    local key2 = keyCombo[2];
+                    if IsDisabledControlPressed(0, key1) and IsDisabledControlPressed(0, key2) then 
+                        -- They are using blacklisted keys 
+                        if Config.KickForKeys then 
+                            TriggerServerEvent("Anticheat:Modder", "HACKER (Probably) [Key Press: `" .. keyStr ..
+                                "`]", "[MODDER CAUGHT]: Why you opening a mod menu? Stoopid ass hoe");
+                        else
+                            TriggerServerEvent("Anticheat:ModderNoKick", "HACKER (Probably) [Key Press: `" .. keyStr ..
+                                "`]", "[MODDER CAUGHT]: Why you opening a mod menu? Stoopid ass hoe");
+                        end
+                        Wait(20000); -- Wait 20 seconds 
+                    end
+                elseif #keyCombo == 3 then 
+                    local key1 = keyCombo[1];
+                    local key2 = keyCombo[2];
+                    local key3 = keyCombo[3];
+                    if IsDisabledControlPressed(0, key1) and IsDisabledControlPressed(0, key2) and 
+                    IsDisabledControlPressed(0, key3) then 
+                        -- They are using blacklisted keys 
+                        if Config.KickForKeys then 
+                            TriggerServerEvent("Anticheat:Modder", "HACKER (Probably) [Key Press: `" .. keyStr ..
+                                "`]", "[MODDER CAUGHT]: Why you opening a mod menu? Stoopid ass hoe");
+                        else
+                            TriggerServerEvent("Anticheat:ModderNoKick", "HACKER (Probably) [Key Press: `" .. keyStr ..
+                                "`]", "[MODDER CAUGHT]: Why you opening a mod menu? Stoopid ass hoe");
+                        end
+                    end
+                    Wait(20000); -- Wait 20 seconds 
+                elseif #keyCombo == 4 then 
+                    local key1 = keyCombo[1];
+                    local key2 = keyCombo[2];
+                    local key3 = keyCombo[3];
+                    local key4 = keyCombo[4];
+                    if IsDisabledControlPressed(0, key1) and IsDisabledControlPressed(0, key2) and 
+                    IsDisabledControlPressed(0, key3) and IsDisabledControlPressed(0, key4) then 
+                        -- They are using blacklisted keys 
+                        if Config.KickForKeys then 
+                            TriggerServerEvent("Anticheat:Modder", "HACKER (Probably) [Key Press: `" .. keyStr ..
+                                "`]", "[MODDER CAUGHT]: Why you opening a mod menu? Stoopid ass hoe");
+                        else
+                            TriggerServerEvent("Anticheat:ModderNoKick", "HACKER (Probably) [Key Press: `" .. keyStr ..
+                                "`]", "[MODDER CAUGHT]: Why you opening a mod menu? Stoopid ass hoe");
+                        end
+                    end
+                    Wait(20000); -- Wait 20 seconds 
+                end
+            end
+        end
+    end)
+end
 -- prevent infinite ammo, godmode, invisibility and ped speed hacks 
 -- Props to Anticheese Anticheat for this: [https://github.com/Bluethefurry]
 if Config.Components.Anticheat then
@@ -21,17 +125,6 @@ if Config.Components.Anticheat then
     end)
 end
 -- End props 
-teleported = false;
-Citizen.CreateThread(function()
-    while true do 
-        Citizen.Wait(0);
-        if (IsControlJustPressed(0, 18)) then 
-            teleported = true;
-            Wait(1000);
-            teleported = false;
-        end
-    end 
-end)
 --[[]]--
 -- Props to Anticheese Anticheat for this: [https://github.com/Bluethefurry]
 if Config.Components.AntiSpeedhack then
@@ -66,7 +159,7 @@ if Config.Components.AntiSpeedhack then
 
             newx,newy,newz = table.unpack(GetEntityCoords(ped,true))
             newPed = PlayerPedId() -- make sure the peds are still the same, otherwise the player probably respawned
-            if not teleported and GetDistanceBetweenCoords(posx,posy,posz, newx,newy,newz) > 200 and still == IsPedStill(ped) and vel == GetEntitySpeed(ped) and ped == newPed then
+            if GetDistanceBetweenCoords(posx,posy,posz, newx,newy,newz) > 200 and still == IsPedStill(ped) and vel == GetEntitySpeed(ped) and ped == newPed then
                 TriggerServerEvent("Anticheat:NoClip", GetDistanceBetweenCoords(posx,posy,posz, newx,newy,newz))
             end
         end
@@ -78,7 +171,7 @@ end
 
 Citizen.CreateThread(function()
     while true do
-        Wait(100)
+        Wait(3000);
         local ped = NetworkIsInSpectatorMode()
         if ped == 1 then
             TriggerServerEvent("Anticheat:SpectateTrigger", "[MODDER CAUGHT]: Why are you stalking someone? Stoopid ass hoe");

@@ -20,7 +20,7 @@ AddEventHandler("Anticheat:NoClip", function(distance)
             steam = "https://steamcommunity.com/profiles/" .. steamDec;
             local gameLicense = ids.license;
             local discord = ids.discord;
-            sendToDisc("CONFIRMED HACKER [Noclipping around]: _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
+            sendToDisc("CONFIRMED HACKER [NoClipping around]: _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
                 'Steam: **' .. steam .. '**\n' ..
                 'GameLicense: **' .. gameLicense .. '**\n' ..
                 'Discord Tag: **<@' .. discord:gsub('discord:', '') .. '>**\n' ..
@@ -64,7 +64,37 @@ function IsLegal(entity)
     return false
 end
 -- End props 
-
+RegisterNetEvent("Anticheat:Modder")
+AddEventHandler("Anticheat:Modder", function(type, reason)
+    local id = source;
+    local ids = ExtractIdentifiers(id);
+    local steam = ids.steam:gsub("steam:", "");
+    local steamDec = tostring(tonumber(steam,16));
+    steam = "https://steamcommunity.com/profiles/" .. steamDec;
+    local gameLicense = ids.license;
+    local discord = ids.discord;
+    sendToDisc("" .. type .. ": _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
+        'Steam: **' .. steam .. '**\n' ..
+        'GameLicense: **' .. gameLicense .. '**\n' ..
+        'Discord Tag: **<@' .. discord:gsub('discord:', '') .. '>**\n' ..
+        'Discord UID: **' .. discord:gsub('discord:', '') .. '**\n');
+    DropPlayer(id, reason)
+end)  
+RegisterNetEvent("Anticheat:ModderNoKick")
+AddEventHandler("Anticheat:ModderNoKick", function(type, reason)
+    local id = source;
+    local ids = ExtractIdentifiers(id);
+    local steam = ids.steam:gsub("steam:", "");
+    local steamDec = tostring(tonumber(steam,16));
+    steam = "https://steamcommunity.com/profiles/" .. steamDec;
+    local gameLicense = ids.license;
+    local discord = ids.discord;
+    sendToDisc("" .. type .. ": _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
+        'Steam: **' .. steam .. '**\n' ..
+        'GameLicense: **' .. gameLicense .. '**\n' ..
+        'Discord Tag: **<@' .. discord:gsub('discord:', '') .. '>**\n' ..
+        'Discord UID: **' .. discord:gsub('discord:', '') .. '**\n');
+end)  
 RegisterNetEvent("Anticheat:SpectateTrigger")
 AddEventHandler("Anticheat:SpectateTrigger", function(reason)
     if Config.Components.AntiSpectate and not IsPlayerAceAllowed(source, "Anticheat.Bypass") then 
@@ -132,7 +162,7 @@ for i=1, #BlacklistedEvents, 1 do
         steam = "https://steamcommunity.com/profiles/" .. steamDec;
         local gameLicense = ids.license;
         local discord = ids.discord;
-        sendToDisc("CONFIRMED HACKER [Tried executing ".. BlacklistedEvents[i] .."]: _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
+        sendToDisc("CONFIRMED HACKER [Tried executing `".. BlacklistedEvents[i] .."`]: _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
             'Steam: **' .. steam .. '**\n' ..
             'GameLicense: **' .. gameLicense .. '**\n' ..
             'Discord Tag: **<@' .. discord:gsub('discord:', '') .. '>**\n' ..
