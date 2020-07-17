@@ -1,4 +1,6 @@
-# Badger-Anticheat
+# Further documentation for this resource has been moved to: https://docs.badger.store/fivem-misc.-scripts/badger-anticheat
+
+## Badger-Anticheat
 Badger's Official Anticheat [code inspirations from DevLanceGood and Bluethefurry on GitHub]
 
 ## What it can stop?
