@@ -1,8 +1,9 @@
 -- Prevent most injection:
 if Config.Components.AntiCommands then 
     Citizen.CreateThread(function()
+        Citizen.Wait(120000);
         while true do
-            Citizen.Wait(120000)
+            Citizen.Wait(500);
             local blacklistedCommands = Config.BlacklistedCommands or {}
             local registeredCommands = GetRegisteredCommands()
 
@@ -14,7 +15,7 @@ if Config.Components.AntiCommands then
                         string.lower(command.name) == string.lower('-' .. blacklistedCommand) or
                         string.lower(command.name) == string.lower('/' .. blacklistedCommand)) then
                         TriggerServerEvent("Anticheat:Modder", "CONFIRMED HACKER [Lua Injection]", 
-                            "[MODDER CAUGHT]: Why you injecting Lua code? Stoopd ass hoe");
+                            "Why you injecting Lua code? Stoopid ass hoe");
                     end
                 end
             end
@@ -25,8 +26,8 @@ end
 if Config.Components.AntiESX then 
     RegisterNetEvent('esx:getSharedObject')
     AddEventHandler('esx:getSharedObject', function()
-        TriggerServerEvent("Anticheat:Modder", "CONFIRMED HACKER [Getting ESX object via client code]", 
-                            "[MODDER CAUGHT]: Why you injecting Lua code? Stoopd ass hoe");
+        TriggerServerEvent("Anticheat:ModderESX", "CONFIRMED HACKER [Getting ESX object via client code]", 
+                            "Why you injecting Lua code? Stoopid ass hoe");
     end)
 end
 
@@ -44,11 +45,11 @@ if Config.Components.AntiKeys then
                     if IsDisabledControlJustReleased(0, key1) then 
                         -- They are using a blacklisted key 
                         if Config.KickForKeys then 
-                            TriggerServerEvent("Anticheat:Modder", "HACKER (Probably) [Key Press: `" .. keyStr ..
-                                "`]", "[MODDER CAUGHT]: Why you opening a mod menu? Stoopid ass hoe");
+                            TriggerServerEvent("Anticheat:ModderNoKick", "HACKER (Probably) [Key Press: `" .. keyStr ..
+                                "`]", "Why you opening a mod menu? Stoopid ass hoe", true);
                         else
                             TriggerServerEvent("Anticheat:ModderNoKick", "HACKER (Probably) [Key Press: `" .. keyStr ..
-                                "`]", "[MODDER CAUGHT]: Why you opening a mod menu? Stoopid ass hoe");
+                                "`]", "Why you opening a mod menu? Stoopid ass hoe", false);
                         end
                     end
                 elseif #keyCombo == 2 then 
@@ -57,11 +58,11 @@ if Config.Components.AntiKeys then
                     if IsDisabledControlPressed(0, key1) and IsDisabledControlPressed(0, key2) then 
                         -- They are using blacklisted keys 
                         if Config.KickForKeys then 
-                            TriggerServerEvent("Anticheat:Modder", "HACKER (Probably) [Key Press: `" .. keyStr ..
-                                "`]", "[MODDER CAUGHT]: Why you opening a mod menu? Stoopid ass hoe");
+                            TriggerServerEvent("Anticheat:ModderNoKick", "HACKER (Probably) [Key Press: `" .. keyStr ..
+                                "`]", "Why you opening a mod menu? Stoopid ass hoe", true);
                         else
                             TriggerServerEvent("Anticheat:ModderNoKick", "HACKER (Probably) [Key Press: `" .. keyStr ..
-                                "`]", "[MODDER CAUGHT]: Why you opening a mod menu? Stoopid ass hoe");
+                                "`]", "Why you opening a mod menu? Stoopid ass hoe", false);
                         end
                         Wait(20000); -- Wait 20 seconds 
                     end
@@ -73,11 +74,11 @@ if Config.Components.AntiKeys then
                     IsDisabledControlPressed(0, key3) then 
                         -- They are using blacklisted keys 
                         if Config.KickForKeys then 
-                            TriggerServerEvent("Anticheat:Modder", "HACKER (Probably) [Key Press: `" .. keyStr ..
-                                "`]", "[MODDER CAUGHT]: Why you opening a mod menu? Stoopid ass hoe");
+                            TriggerServerEvent("Anticheat:ModderNoKick", "HACKER (Probably) [Key Press: `" .. keyStr ..
+                                "`]", "Why you opening a mod menu? Stoopid ass hoe", true);
                         else
                             TriggerServerEvent("Anticheat:ModderNoKick", "HACKER (Probably) [Key Press: `" .. keyStr ..
-                                "`]", "[MODDER CAUGHT]: Why you opening a mod menu? Stoopid ass hoe");
+                                "`]", "Why you opening a mod menu? Stoopid ass hoe", false);
                         end
                     end
                     Wait(20000); -- Wait 20 seconds 
@@ -90,11 +91,11 @@ if Config.Components.AntiKeys then
                     IsDisabledControlPressed(0, key3) and IsDisabledControlPressed(0, key4) then 
                         -- They are using blacklisted keys 
                         if Config.KickForKeys then 
-                            TriggerServerEvent("Anticheat:Modder", "HACKER (Probably) [Key Press: `" .. keyStr ..
-                                "`]", "[MODDER CAUGHT]: Why you opening a mod menu? Stoopid ass hoe");
+                            TriggerServerEvent("Anticheat:ModderNoKick", "HACKER (Probably) [Key Press: `" .. keyStr ..
+                                "`]", "Why you opening a mod menu? Stoopid ass hoe", true);
                         else
                             TriggerServerEvent("Anticheat:ModderNoKick", "HACKER (Probably) [Key Press: `" .. keyStr ..
-                                "`]", "[MODDER CAUGHT]: Why you opening a mod menu? Stoopid ass hoe");
+                                "`]", "Why you opening a mod menu? Stoopid ass hoe", false);
                         end
                     end
                     Wait(20000); -- Wait 20 seconds 
@@ -174,7 +175,7 @@ Citizen.CreateThread(function()
         Wait(3000);
         local ped = NetworkIsInSpectatorMode()
         if ped == 1 then
-            TriggerServerEvent("Anticheat:SpectateTrigger", "[MODDER CAUGHT]: Why are you stalking someone? Stoopid ass hoe");
+            TriggerServerEvent("Anticheat:SpectateTrigger", "Why are you stalking someone? Stoopid ass hoe");
         end
     end
 end)

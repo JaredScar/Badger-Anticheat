@@ -1,15 +1,22 @@
 Config = {
-    TowTruckDrivers = {'S_M_M_TRUCKER_01', 'MP_M_WAREMECH_01'},
+    WhitelistPedModels = {'S_M_M_TRUCKER_01', 'MP_M_WAREMECH_01'},
     NoClipTriggerCount = 3,
     Components = {
          AntiCheat = true, --AntiInvincible, AntiInfiniteAmmo, etc.
          AntiSpectate = true,
-         AntiTeleport = true,
          AntiNoclip = true,
          AntiSpeedhack = true,
          AntiCommands = true,
          AntiKeys = true,
          AntiESX = true,
+    },
+    BanComponents = {
+        AntiSpectate = true,
+        AntiNoClip = false,
+        AntiCommands = true,
+        AntiESX = true,
+        AntiFakeMessage = true,
+        AntiBlacklistedEvent = true,
     },
     KickForKeys = false,
     BlacklistedKeys = {

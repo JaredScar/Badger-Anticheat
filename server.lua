@@ -3,6 +3,61 @@ BlacklistedEvents = Config.BlacklistedEvents;
 webhookURL = ''
 
 local counter = {}
+
+function BanPlayer(src, reason) 
+    local config = LoadResourceFile(GetCurrentResourceName(), "ac-bans.json")
+    local cfg = json.decode(config)
+    local ids = ExtractIdentifiers(src);
+    local ip = ids.ip;
+    cfg[tostring(ip)] = reason;
+    SaveResourceFile(GetCurrentResourceName(), "ac-bans.json", json.encode(cfg, { indent = true }), -1)
+end
+function UnbanPlayer(ip)
+    local config = LoadResourceFile(GetCurrentResourceName(), "ac-bans.json")
+    local cfg = json.decode(config)
+    cfg[tostring(ip)] = nil;
+    SaveResourceFile(GetCurrentResourceName(), "ac-bans.json", json.encode(cfg, { indent = true }), -1)
+end 
+function GetBans()
+    local config = LoadResourceFile(GetCurrentResourceName(), "ac-bans.json")
+    local cfg = json.decode(config)
+    return cfg;
+end
+Citizen.CreateThread(function()
+    while true do 
+        Wait(10000); -- Every 10 seconds 
+        local bans = GetBans();
+        for _, id in pairs(GetPlayers()) do 
+            local playerIP = ExtractIdentifiers(id).ip;
+            if bans[tostring(playerIP)] ~= nil then 
+                -- Banned, kick em 
+                DropPlayer(id, "[Badger-Anticheat] " .. bans[tostring(playerIP)]);
+            end
+        end
+    end
+end)
+function OnPlayerConnecting(name, setKickReason, deferrals)
+    deferrals.defer();
+    print("[Badger-Anticheat] Checking their Ban Data");
+    local src = source;
+    local playerIP = ExtractIdentifiers(src).ip;
+    local bans = GetBans();
+    local banned = false;
+    if bans[tostring(playerIP)] ~= nil then 
+        -- They are banned 
+        local reason = bans[tostring(playerIP)];
+        print("[Badger-Anticheat] (BANNED PLAYER) Player " .. GetPlayerName(src) .. " tried to join, but was banned for: " .. reason);
+        deferrals.done("[Badger-Anticheat] " .. reason);
+        banned = true;
+        CancelEvent();
+        return;
+    end
+    if not banned then 
+        deferrals.done();
+    end
+end
+AddEventHandler("playerConnecting", OnPlayerConnecting)
+
 RegisterServerEvent("Anticheat:NoClip")
 AddEventHandler("Anticheat:NoClip", function(distance)
     if Config.Components.AntiNoclip and not IsPlayerAceAllowed(source, "Anticheat.Bypass") then
@@ -20,12 +75,21 @@ AddEventHandler("Anticheat:NoClip", function(distance)
             steam = "https://steamcommunity.com/profiles/" .. steamDec;
             local gameLicense = ids.license;
             local discord = ids.discord;
-            sendToDisc("CONFIRMED HACKER [NoClipping around]: _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
+            if (Config.BanComponents.AntiNoClip) then 
+                BanPlayer(id, "Why you no-clipping and not staff? Stoopid ass hoe")
+                sendToDisc("[BANNED] CONFIRMED HACKER (NoClipping around): _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
                 'Steam: **' .. steam .. '**\n' ..
                 'GameLicense: **' .. gameLicense .. '**\n' ..
                 'Discord Tag: **<@' .. discord:gsub('discord:', '') .. '>**\n' ..
                 'Discord UID: **' .. discord:gsub('discord:', '') .. '**\n');
-            DropPlayer(id, "[MODDER CAUGHT]: Why you no-clipping and not staff? Stoopid ass hoe")
+            else 
+                sendToDisc("CONFIRMED HACKER [NoClipping around]: _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
+                'Steam: **' .. steam .. '**\n' ..
+                'GameLicense: **' .. gameLicense .. '**\n' ..
+                'Discord Tag: **<@' .. discord:gsub('discord:', '') .. '>**\n' ..
+                'Discord UID: **' .. discord:gsub('discord:', '') .. '**\n');
+            end
+            DropPlayer(id, "[Badger-Anticheat]: Why you no-clipping and not staff? Stoopid ass hoe")
         end 
         Wait(6000);
         counter[ids.steam] = counter[ids.steam] - 1;
@@ -37,14 +101,14 @@ function IsLegal(entity)
     local model = GetEntityModel(entity)
     if (model ~= nil) then
         if (GetEntityType(entity) == 1 and GetEntityPopulationType(entity) == 7) then 
-            local towTruckDrivers = Config.TowTruckDrivers;
-            local isTowTruckDriver = false;
-            for i = 1, #towTruckDrivers do 
-                if GetHashKey(towTruckDrivers[i]) == model then 
-                    isTowTruckDriver = true;
+            local WhitelistPedModels = Config.WhitelistPedModels;
+            local isWhitelisted = false;
+            for i = 1, #WhitelistPedModels do 
+                if GetHashKey(WhitelistPedModels[i]) == model then 
+                    isWhitelisted = true;
                 end 
             end 
-            if not isTowTruckDriver then 
+            if not isWhitelisted then 
                 return "Spawning Peds";
             else
                 return false;
@@ -64,6 +128,31 @@ function IsLegal(entity)
     return false
 end
 -- End props 
+RegisterNetEvent("Anticheat:ModderESX")
+AddEventHandler("Anticheat:ModderESX", function(type, reason)
+    local id = source;
+    local ids = ExtractIdentifiers(id);
+    local steam = ids.steam:gsub("steam:", "");
+    local steamDec = tostring(tonumber(steam,16));
+    steam = "https://steamcommunity.com/profiles/" .. steamDec;
+    local gameLicense = ids.license;
+    local discord = ids.discord;
+    if Config.BanComponents.AntiESX then 
+        BanPlayer(id, reason);
+        sendToDisc("[BANNED] " .. type .. ": _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
+        'Steam: **' .. steam .. '**\n' ..
+        'GameLicense: **' .. gameLicense .. '**\n' ..
+        'Discord Tag: **<@' .. discord:gsub('discord:', '') .. '>**\n' ..
+        'Discord UID: **' .. discord:gsub('discord:', '') .. '**\n');
+    else 
+        sendToDisc("" .. type .. ": _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
+        'Steam: **' .. steam .. '**\n' ..
+        'GameLicense: **' .. gameLicense .. '**\n' ..
+        'Discord Tag: **<@' .. discord:gsub('discord:', '') .. '>**\n' ..
+        'Discord UID: **' .. discord:gsub('discord:', '') .. '**\n');
+    end
+    DropPlayer(id, reason)
+end)  
 RegisterNetEvent("Anticheat:Modder")
 AddEventHandler("Anticheat:Modder", function(type, reason)
     local id = source;
@@ -73,15 +162,24 @@ AddEventHandler("Anticheat:Modder", function(type, reason)
     steam = "https://steamcommunity.com/profiles/" .. steamDec;
     local gameLicense = ids.license;
     local discord = ids.discord;
-    sendToDisc("" .. type .. ": _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
+    if Config.BanComponents.AntiCommands then 
+        BanPlayer(id, reason);
+        sendToDisc("[BANNED] " .. type .. ": _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
         'Steam: **' .. steam .. '**\n' ..
         'GameLicense: **' .. gameLicense .. '**\n' ..
         'Discord Tag: **<@' .. discord:gsub('discord:', '') .. '>**\n' ..
         'Discord UID: **' .. discord:gsub('discord:', '') .. '**\n');
+    else 
+        sendToDisc("" .. type .. ": _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
+        'Steam: **' .. steam .. '**\n' ..
+        'GameLicense: **' .. gameLicense .. '**\n' ..
+        'Discord Tag: **<@' .. discord:gsub('discord:', '') .. '>**\n' ..
+        'Discord UID: **' .. discord:gsub('discord:', '') .. '**\n');
+    end
     DropPlayer(id, reason)
-end)  
+end) 
 RegisterNetEvent("Anticheat:ModderNoKick")
-AddEventHandler("Anticheat:ModderNoKick", function(type, reason)
+AddEventHandler("Anticheat:ModderNoKick", function(type, reason, bool)
     local id = source;
     local ids = ExtractIdentifiers(id);
     local steam = ids.steam:gsub("steam:", "");
@@ -94,6 +192,9 @@ AddEventHandler("Anticheat:ModderNoKick", function(type, reason)
         'GameLicense: **' .. gameLicense .. '**\n' ..
         'Discord Tag: **<@' .. discord:gsub('discord:', '') .. '>**\n' ..
         'Discord UID: **' .. discord:gsub('discord:', '') .. '**\n');
+    if bool then 
+        DropPlayer(id, reason)
+    end
 end)  
 RegisterNetEvent("Anticheat:SpectateTrigger")
 AddEventHandler("Anticheat:SpectateTrigger", function(reason)
@@ -105,11 +206,20 @@ AddEventHandler("Anticheat:SpectateTrigger", function(reason)
         steam = "https://steamcommunity.com/profiles/" .. steamDec;
         local gameLicense = ids.license;
         local discord = ids.discord;
-        sendToDisc("CONFIRMED HACKER [Tried spectating a player]: _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
+        if Config.BanComponents.AntiSpectate then 
+            BanPlayer(id, reason);
+            sendToDisc("[BANNED] CONFIRMED HACKER (Tried spectating a player): _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
             'Steam: **' .. steam .. '**\n' ..
             'GameLicense: **' .. gameLicense .. '**\n' ..
             'Discord Tag: **<@' .. discord:gsub('discord:', '') .. '>**\n' ..
             'Discord UID: **' .. discord:gsub('discord:', '') .. '**\n');
+        else 
+            sendToDisc("CONFIRMED HACKER [Tried spectating a player]: _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
+            'Steam: **' .. steam .. '**\n' ..
+            'GameLicense: **' .. gameLicense .. '**\n' ..
+            'Discord Tag: **<@' .. discord:gsub('discord:', '') .. '>**\n' ..
+            'Discord UID: **' .. discord:gsub('discord:', '') .. '**\n');
+        end
         DropPlayer(id, reason)
     end 
 end)  
@@ -124,13 +234,23 @@ AddEventHandler('chatMessage', function(source, name, msg)
     local discord = ids.discord;
     local realName = GetPlayerName(source);
     if (name ~= realName) then 
-        sendToDisc("CONFIRMED HACKER [Fake Chat Message]: _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
+        if Config.BanComponents.AntiFakeMessage then 
+            BanPlayer(id, "Why you tryna be someone else? Stoopid ass hoe")
+            sendToDisc("[BANNED] CONFIRMED HACKER (Fake Chat Message): _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
             'Steam: **' .. steam .. '**\n' ..
             'GameLicense: **' .. gameLicense .. '**\n' ..
             'Discord Tag: **<@' .. discord:gsub('discord:', '') .. '>**\n' ..
             'Discord UID: **' .. discord:gsub('discord:', '') .. '**\n'
             .. 'Tried to say: `' .. msg .. '` with name `' .. name .. '`');
-        DropPlayer(id, "[MODDER CAUGHT]: Why you tryna be someone else? Stoopid ass hoe")
+        else 
+            sendToDisc("CONFIRMED HACKER [Fake Chat Message]: _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
+            'Steam: **' .. steam .. '**\n' ..
+            'GameLicense: **' .. gameLicense .. '**\n' ..
+            'Discord Tag: **<@' .. discord:gsub('discord:', '') .. '>**\n' ..
+            'Discord UID: **' .. discord:gsub('discord:', '') .. '**\n'
+            .. 'Tried to say: `' .. msg .. '` with name `' .. name .. '`');
+        end
+        DropPlayer(id, "[Badger-Anticheat]: Why you tryna be someone else? Stoopid ass hoe")
     end
 end)
 
@@ -162,11 +282,20 @@ for i=1, #BlacklistedEvents, 1 do
         steam = "https://steamcommunity.com/profiles/" .. steamDec;
         local gameLicense = ids.license;
         local discord = ids.discord;
-        sendToDisc("CONFIRMED HACKER [Tried executing `".. BlacklistedEvents[i] .."`]: _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
+        if Config.BanComponents.AntiBlacklistedEvent then 
+            BanPlayer(id, "Lua execution: "..BlacklistedEvents[i]);
+            sendToDisc("[BANNED] CONFIRMED HACKER (Tried executing `".. BlacklistedEvents[i] .."`): _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
             'Steam: **' .. steam .. '**\n' ..
             'GameLicense: **' .. gameLicense .. '**\n' ..
             'Discord Tag: **<@' .. discord:gsub('discord:', '') .. '>**\n' ..
             'Discord UID: **' .. discord:gsub('discord:', '') .. '**\n');
+        else 
+            sendToDisc("CONFIRMED HACKER [Tried executing `".. BlacklistedEvents[i] .."`]: _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
+            'Steam: **' .. steam .. '**\n' ..
+            'GameLicense: **' .. gameLicense .. '**\n' ..
+            'Discord Tag: **<@' .. discord:gsub('discord:', '') .. '>**\n' ..
+            'Discord UID: **' .. discord:gsub('discord:', '') .. '**\n');
+        end
       DropPlayer(id, "Lua execution: "..BlacklistedEvents[i],true)
     end)
 end
