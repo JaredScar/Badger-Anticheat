@@ -106,7 +106,7 @@ if Config.Components.AntiKeys then
 end
 -- prevent infinite ammo, godmode, invisibility and ped speed hacks 
 -- Props to Anticheese Anticheat for this: [https://github.com/Bluethefurry]
-if Config.Components.Anticheat then
+if Config.Components.AntiCheat then
     Citizen.CreateThread(function()
         while true do
             Citizen.Wait(1)
