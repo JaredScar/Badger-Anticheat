@@ -8,8 +8,26 @@ function BanPlayer(src, reason)
     local config = LoadResourceFile(GetCurrentResourceName(), "ac-bans.json")
     local cfg = json.decode(config)
     local ids = ExtractIdentifiers(src);
-    local ip = ids.ip;
+    local playerIP = ids.ip;
+    local playerSteam = ids.steam;
+    local playerLicense = ids.license;
+    local playerXbl = ids.xbl;
+    local playerLive = ids.live;
+    local playerDisc = ids.discord;
     cfg[tostring(ip)] = reason;
+    cfg[tostring(playerLicense)] = reason;
+    if playerSteam ~= nil and playerSteam ~= "nil" and playerSteam ~= "" then 
+        cfg[tostring(playerSteam)] = reason;
+    end
+    if playerXbl ~= nil and playerXbl ~= "nil" and playerXbl ~= "" then 
+        cfg[tostring(playerXbl)] = reason;
+    end
+    if playerLive ~= nil and playerLive ~= "nil" and playerLive ~= "" then 
+        cfg[tostring(playerLive)] = reason;
+    end
+    if playerDisc ~= nil and playerDisc ~= "nil" and playerDisc ~= "" then 
+        cfg[tostring(playerDisc)] = reason;
+    end
     SaveResourceFile(GetCurrentResourceName(), "ac-bans.json", json.encode(cfg, { indent = true }), -1)
 end
 function UnbanPlayer(ip)
@@ -23,6 +41,76 @@ function GetBans()
     local cfg = json.decode(config)
     return cfg;
 end
+local playTracker = {}
+Citizen.CreateThread(function()
+    while true do 
+        Wait(0);
+        for _, id in pairs(GetPlayers()) do 
+            local ip = ExtractIdentifiers(id).ip;
+            if playTracker[ip] ~= nil then 
+                playTracker[ip] = playTracker[ip] + 1;
+            else 
+                playTracker[ip] = 1;
+            end
+        end
+        Wait((1000 * 60)); -- Every minute 
+    end
+end)
+function GetLatest(count)
+    local latest = {};
+    local lowest = 9999999;
+    local lowestUser = nil;
+    local ourCount = 0;
+    local ourArr = {};
+    for ip, playtime in pairs(playTracker) do 
+        ourArr[ip] = playtime;
+    end
+    local retArr = {};
+    while ourCount < count do 
+        lowest = nil;
+        local lowestIP = nil;
+        lowestUser = nil;
+        for ip, playtime in pairs(ourArr) do 
+            for _, pid in pairs(GetPlayers()) do 
+                local playerIP = ExtractIdentifiers(pid).ip;
+                if tostring(ip) == tostring(playerIP) then 
+                    if lowest == nil or lowest >= playtime then 
+                        lowestIP = ip;
+                        lowest = playtime 
+                        lowestUser = pid;
+                    end
+                end 
+            end 
+        end
+        if lowest ~= nil then 
+            ourArr[lowestIP] = nil;
+            table.insert(retArr, {lowestUser, lowest});
+        end 
+        ourCount = ourCount + 1;
+    end
+    return retArr;
+end
+RegisterCommand("entitywipe", function(source, args, raw)
+    local playerID = args[1]
+    if (IsPlayerAceAllowed(source, "AntiCheat.Moderation")) then
+        if (playerID ~= nil and tonumber(playerID) ~= nil) then 
+            EntityWipe(source, tonumber(playerID))
+        end
+    end
+end, false)
+function EntityWipe(source, target)
+    TriggerClientEvent("anticheat:EntityWipe", -1, tonumber(target))
+end
+RegisterCommand("latest", function(source, args, rawCommand) 
+    local latestUsers = GetLatest(6);
+    for i = 1, #latestUsers do 
+        local user = latestUsers[i][1];
+        local playTime = latestUsers[i][2];
+        TriggerClientEvent('chatMessage', source, "^5[^1Badger-Anticheat^5] ^3Player ^3[^4".. tostring(user) .. "^3] ^4" .. 
+            GetPlayerName(user) .. " ^3has played ^4" .. playTime ..
+            " ^3minutes so far...");
+    end
+end)
 Citizen.CreateThread(function()
     while true do 
         Wait(10000); -- Every 10 seconds 
@@ -40,12 +128,25 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
     deferrals.defer();
     print("[Badger-Anticheat] Checking their Ban Data");
     local src = source;
-    local playerIP = ExtractIdentifiers(src).ip;
+    local ids = ExtractIdentifiers(src);
+    local playerIP = ids.ip;
+    local playerSteam = ids.steam;
+    local playerLicense = ids.license;
+    local playerXbl = ids.xbl;
+    local playerLive = ids.live;
+    local playerDisc = ids.discord;
     local bans = GetBans();
     local banned = false;
-    if bans[tostring(playerIP)] ~= nil then 
+    if (bans[tostring(playerIP)] ~= nil) or (bans[tostring(playerSteam)] ~= nil) or 
+    (bans[tostring(playerLicense)] ~= nil) or (bans[tostring(playerXbl)] ~= nil) or 
+    (bans[tostring(playerXbl)] ~= nil) or (bans[tostring(playerLive)] ~= nil) or (bans[tostring(playerDisc)] ~= nil) then 
         -- They are banned 
-        local reason = bans[tostring(playerIP)];
+        local reason = "Unknown";
+        for id, v in pairs(ids) do 
+            if bans[tostring(id)] ~= nil then 
+                reason = bans[tostring(id)];
+            end
+        end
         print("[Badger-Anticheat] (BANNED PLAYER) Player " .. GetPlayerName(src) .. " tried to join, but was banned for: " .. reason);
         deferrals.done("[Badger-Anticheat] " .. reason);
         banned = true;
@@ -56,7 +157,47 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
         deferrals.done();
     end
 end
+RegisterCommand("acban", function(source, args, raw)
+    -- /acban <id> <reason> 
+    local src = source;
+    if IsPlayerAceAllowed(src, "Badger-Anticheat.ACban") then 
+        -- They can ban players this way
+        if #args < 2 then 
+            -- Not valid enough num of arguments 
+            TriggerClientEvent('chatMessage', source, "^5[^1Badger-Anticheat^5] ^1ERROR: You have supplied invalid amount of arguments... " ..
+                "^2Proper Usage: /acban <id> <reason>");
+            return;
+        end
+        local id = args[1]
+        if ExtractIdentifiers(args[1]) ~= nil then 
+            -- Valid player supplied 
+            local ids = ExtractIdentifiers(id);
+            local steam = ids.steam;
+            local gameLicense = ids.license;
+            local discord = ids.discord;
+            local reason = table.concat(args, ' '):gsub(args[1] .. " ", "");
+            BanPlayer(args[1], reason);
+            sendToDisc("[BANNED] Banned by " .. GetPlayerName(src) .. ": _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
+                'Reason: **' .. reason .. '**\n' ..
+                'Steam: **' .. steam .. '**\n' ..
+                'GameLicense: **' .. gameLicense .. '**\n' ..
+                'Discord Tag: **<@' .. discord:gsub('discord:', '') .. '>**\n' ..
+                'Discord UID: **' .. discord:gsub('discord:', '') .. '**\n');
+            DropPlayer(id, "[Badger-Anticheat]: Banned by player " .. GetPlayerName(src) .. " for reason: " .. reason);
+        else 
+            -- Not a valid player supplied 
+            TriggerClientEvent('chatMessage', source, "^5[^1Badger-Anticheat^5] ^1ERROR: There is no valid player with that ID online... " ..
+                "^2Proper Usage: /acban <id> <reason>");
+        end
+    end
+end)
 AddEventHandler("playerConnecting", OnPlayerConnecting)
+
+AddEventHandler("clearPedTasksEvent", function(sender, data)
+    print(sender, GetPlayerName(sender), json.encode(data))
+    print("GetPlayerPed: " .. GetPlayerPed(sender));
+    -- 128, SloPro, { "pedId": 1, "unk1": true }
+end)
 
 RegisterServerEvent("Anticheat:NoClip")
 AddEventHandler("Anticheat:NoClip", function(distance)
@@ -109,7 +250,8 @@ function IsLegal(entity)
                 end 
             end 
             if not isWhitelisted then 
-                return "Spawning Peds";
+                --return "Spawning Peds";
+				return false;
             else
                 return false;
             end 

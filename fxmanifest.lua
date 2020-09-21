@@ -1,5 +1,5 @@
 fx_version 'bodacious'
-game 'gta5'
+games { 'gta5' }
 
 author 'Badger'
 description "Badger's Official Anticheat"

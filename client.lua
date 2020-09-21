@@ -1,3 +1,44 @@
+
+
+function Draw3DText(text, radius, pos)
+    if Vdist2(GetEntityCoords(PlayerPedId(), false), pos.x,pos.y,pos.z) < (radius) then
+        local onScreen, _x, _y = World3dToScreen2d(pos.x,pos.y,pos.z)
+        local p = GetEntityCoords(PlayerPedId(), false)
+        local distance = GetDistanceBetweenCoords(p.x, p.y, p.z, pos.x,pos.y,pos.z, 1)
+        local scale = (1 / distance)
+        local fov = (1 / GetGameplayCamFov()) * 75
+        local scale = scale * fov
+        if onScreen then
+            SetTextScale(tonumber(1.0), tonumber(0.35 * (1)))
+            SetTextFont(0)
+            SetTextProportional(true)
+            SetTextColour(255, 255, 255, 255)
+            SetTextOutline()
+            SetTextEntry("STRING")
+            SetTextCentre(true)
+            AddTextComponentString(text)
+            DrawText(_x,_y)
+        end
+    end
+end
+function NetworkDelete(entity)
+    Citizen.CreateThread(function()
+        if DoesEntityExist(entity) and not (IsEntityAPed(entity) and IsPedAPlayer(entity)) then
+            NetworkRequestControlOfEntity(entity)
+            local timeout = 5
+            while timeout > 0 and not NetworkHasControlOfEntity(entity) do
+                Citizen.Wait(1)
+                timeout = timeout - 1
+            end
+            DetachEntity(entity, 0, false)
+            SetEntityCollision(entity, false, false)
+            SetEntityAlpha(entity, 0.0, true)
+            SetEntityAsMissionEntity(entity, true, true)
+            SetEntityAsNoLongerNeeded(entity)
+            DeleteEntity(entity)
+        end
+    end)
+end
 -- Prevent most injection:
 if Config.Components.AntiCommands then 
     Citizen.CreateThread(function()
@@ -22,6 +63,21 @@ if Config.Components.AntiCommands then
         end
     end)
 end 
+RegisterNetEvent("anticheat:EntityWipe")
+AddEventHandler("anticheat:EntityWipe", function(id)
+    Citizen.CreateThread(function() 
+        for k,v in pairs(GetAllEnumerators()) do 
+            local enum = v
+            for entity in enum() do 
+                local owner = NetworkGetEntityOwner(entity)
+                local playerID = GetPlayerServerId(owner)
+                if (owner ~= -1 and (id == playerID or id == -1)) then
+                    NetworkDelete(entity)
+                end
+            end
+        end
+    end)
+end)
 
 if Config.Components.AntiESX then 
     RegisterNetEvent('esx:getSharedObject')
@@ -106,7 +162,7 @@ if Config.Components.AntiKeys then
 end
 -- prevent infinite ammo, godmode, invisibility and ped speed hacks 
 -- Props to Anticheese Anticheat for this: [https://github.com/Bluethefurry]
-if Config.Components.Anticheat then
+if Config.Components.AntiCheat then
     Citizen.CreateThread(function()
         while true do
             Citizen.Wait(1)
