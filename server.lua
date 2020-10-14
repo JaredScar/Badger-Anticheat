@@ -518,3 +518,27 @@ function sendToDisc(title, message, footer)
     function(err, text, headers) end, 'POST', json.encode({username = name, embeds = embed}), { ['Content-Type'] = 'application/json' })
   -- END
 end
+
+
+
+--Optional Features depending on the server disable if not suitable for yours!
+AddEventHandler("clearPedTasksEvent", function(sender, data)
+    if Config.Components.AntiCancelAnimations then 
+    CancelEvent()
+    end 
+    -- Stops other players kicking people out of cars
+end)
+
+AddEventHandler('removeWeaponEvent', function(sender, data)
+    if Config.Components.AntiRemoveOtherPlayersWeapons then 
+        CancelEvent()
+    end 
+    -- Would only affect if you have scripts removing other people's weapons. (stops players removing other players weapons)
+end)
+
+AddEventHandler('giveWeaponEvent', function(sender, data)
+    if Config.Components.StopOtherPlayersGivingEachOtherWeapons then 
+    CancelEvent()
+    end 
+    -- Stops other players giving people weapons (doesn't affect single people unless you have give weapons on menus and etc.)
+end)
