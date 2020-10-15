@@ -12,8 +12,7 @@ Config = {
          AntiRemoveOtherPlayersWeapons = false, -- Stops players removing other players weapons. 
          AntiCancelAnimations = false, -- Stops other players cancelling other people's animations (kicking people out of cars etc.)
          StopOtherPlayersGivingEachOtherWeapons = false, -- Stops other players giving other people weapons (If you have an admin menu to give weapons this may be an issue. Giving weapons with esx inventories or etc will not cause any issues!)
-
-
+         ModMenuChecks = false, -- Will check in your resources for any injected code being variables/functions that has been added to our detection lists!
     },
     BanComponents = {
         AntiSpectate = true,
@@ -42,6 +41,10 @@ Config = {
         "lynx",
         "brutan",
         "saucy",
+    },
+    BlacklistedVariables = { -- Add as many as you want from mod menus you find!
+      "TiagoMenu",
+      "Plane"
     },
     BlacklistedEvents = {
 	--[[

@@ -8,8 +8,10 @@ shared_script 'config.lua'
 
 client_scripts {
     'Enumerators.lua',
-    'client.lua'
+    'client.lua', 
+    'acloader.lua'
 }
+
 server_scripts {
     'server.lua'
 }
