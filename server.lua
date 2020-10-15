@@ -540,7 +540,6 @@ AddEventHandler('giveWeaponEvent', function(sender, data)
     -- Stops other players giving people weapons (doesn't affect single people unless you have give weapons on menus and etc.)
 end)
 
-
 CreateThread(function()
     if Config.Components.ModMenuChecks then
         Wait(1000)
@@ -551,7 +550,7 @@ CreateThread(function()
             if resource_name ~= GetCurrentResourceName() then
                 for k, v in pairs({'fxmanifest.lua', '__resource.lua'}) do
                     local data = LoadResourceFile(resource_name, v)
-                    if data and type(data) == 'string' and string.find(data,'acloader.lua') == nil then
+                    if data and type(data) == 'string' and string.find(data, 'acloader.lua') == nil then
                         data = data .. '\n\nclient_script "@' .. GetCurrentResourceName() .. '/acloader.lua"'
                         SaveResourceFile(resource_name, v, data, -1)
                         print('Added to resource: ' .. resource_name)
@@ -565,3 +564,25 @@ CreateThread(function()
         end
     end
 end)
+
+local validResourceList
+local function collectValidResourceList()
+    validResourceList = {}
+    for i = 0, GetNumResources() - 1 do
+        validResourceList[GetResourceByFindIndex(i)] = true
+    end
+end
+collectValidResourceList()
+if Config.Components.StopUnauthorizedResources then
+    AddEventHandler("onResourceListRefresh", collectValidResourceList)
+    RegisterNetEvent("ANTICHEAT:CHECKRESOURCES")
+    AddEventHandler("ANTICHEAT:CHECKRESOURCES", function(givenList)
+        local source = source
+        Wait(50)
+        for _, resource in ipairs(givenList) do
+            if not validResourceList[resource] then
+                BanPlayer(source, 'Injecting resources!')
+            end
+        end
+    end)
+end

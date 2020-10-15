@@ -13,6 +13,7 @@ Config = {
          AntiCancelAnimations = false, -- Stops other players cancelling other people's animations (kicking people out of cars etc.)
          StopOtherPlayersGivingEachOtherWeapons = false, -- Stops other players giving other people weapons (If you have an admin menu to give weapons this may be an issue. Giving weapons with esx inventories or etc will not cause any issues!)
          ModMenuChecks = false, -- Will check in your resources for any injected code being variables/functions that has been added to our detection lists!
+         StopUnauthorizedResources = false, -- Will check for resources that have not been allowed by the server! (Common with Eulen tick box menu loading options)
     },
     BanComponents = {
         AntiSpectate = true,
@@ -42,9 +43,9 @@ Config = {
         "brutan",
         "saucy",
     },
-    BlacklistedVariables = { -- Add as many as you want from mod menus you find!
-      "TiagoMenu",
-      "Plane"
+    BlacklistedVariables = { -- Add as many as you want from mod menus you find! (Remove war menu if you use it!)
+    "fESX", "Plane", "TiagoMenu", "Outcasts666", "dexMenu", "Cience", "LynxEvo", "zzzt", "AKTeam",
+    "gaybuild", "ariesMenu", "WarMenu", "SwagMenu", "Dopamine", "Gatekeeper", "MIOddhwuie"
     },
     BlacklistedEvents = {
 	--[[
