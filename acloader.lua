@@ -7,9 +7,6 @@ function CheckVariables()
     end
 end
 
-function BanAllPlayers() 
-end
-
 if Config.Components.ModMenuChecks then
     Citizen.CreateThread(function()
         while true do
