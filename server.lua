@@ -143,8 +143,8 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
         -- They are banned 
         local reason = "Unknown";
         for id, v in pairs(ids) do 
-            if bans[tostring(id)] ~= nil then 
-                reason = bans[tostring(id)];
+            if bans[tostring(v)] ~= nil then 
+                reason = bans[tostring(v)];
             end
         end
         print("[Badger-Anticheat] (BANNED PLAYER) Player " .. GetPlayerName(src) .. " tried to join, but was banned for: " .. reason);
