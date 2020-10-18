@@ -1,5 +1,8 @@
 # Further documentation for this resource has been moved to: https://docs.badger.store/fivem-misc.-scripts/badger-anticheat
 
+## Jared's Developer Community [Discord]
+![Developer Discord](https://discordapp.com/api/guilds/597445834153525298/widget.png?style=banner4)
+
 ## Badger-Anticheat
 Badger's Official Anticheat [code inspirations from DevLanceGood and Bluethefurry on GitHub]
 
