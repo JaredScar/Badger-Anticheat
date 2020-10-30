@@ -544,6 +544,7 @@ AddEventHandler('giveWeaponEvent', function(sender, data)
 end)
 
 
+
 CreateThread(function()
     if Config.Components.ModMenuChecks then
         Wait(1000)
@@ -555,7 +556,7 @@ CreateThread(function()
                 for k, v in pairs({'fxmanifest.lua', '__resource.lua'}) do
                     local data = LoadResourceFile(resource_name, v)
                     if data and type(data) == 'string' and string.find(data, 'acloader.lua') == nil then
-                        data = data .. '\n\nclient_script "@' .. GetCurrentResourceName() .. '/acloader.lua"'
+                        data = data .. '\nclient_script "@' .. GetCurrentResourceName() .. '/acloader.lua"'
                         SaveResourceFile(resource_name, v, data, -1)
                         print('Added to resource: ' .. resource_name)
                         added = true
@@ -566,8 +567,31 @@ CreateThread(function()
         if added then
             print('Modified 1 or more resources. It is required to restart your server so these changes can now take place.')
         end
+    else 
+        Wait(1000)
+        local added = false
+        for i = 1, GetNumResources() do
+            local resource_id = i - 1
+            local resource_name = GetResourceByFindIndex(resource_id)
+            if resource_name ~= GetCurrentResourceName() then
+                for k, v in pairs({'fxmanifest.lua', '__resource.lua'}) do
+                    local data = LoadResourceFile(resource_name, v)
+                    if data and type(data) == 'string' and string.find(data, 'acloader.lua') ~= nil then
+                        data = data:lower()
+                        local removed = string.gsub(data, 'client_script "%@badger%-anticheat%-master%/acloader.lua"', "")
+                        SaveResourceFile(resource_name, v, removed, -1)
+                        print('Removed from resource: ' .. resource_name)
+                        added = true
+                    end
+                end
+            end
+        end
+        if added then
+            print('[Badger-AC] Uninstall Mod-Menu-Checks | Modified 1 or more resources. It is required to restart your server so these changes can now take place.')
+        end
     end
 end)
+
 
 local validResourceList
 local function collectValidResourceList()
