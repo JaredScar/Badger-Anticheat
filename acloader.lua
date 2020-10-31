@@ -18,4 +18,6 @@ if Enabled then
             CheckVariables()
         end
     end)
+else
+    return "Nil"
 end
