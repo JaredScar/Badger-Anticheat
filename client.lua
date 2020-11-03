@@ -56,7 +56,7 @@ if Config.Components.AntiCommands then
                         string.lower(command.name) == string.lower('-' .. blacklistedCommand) or
                         string.lower(command.name) == string.lower('/' .. blacklistedCommand)) then
                         TriggerServerEvent("Anticheat:Modder", "CONFIRMED HACKER [Lua Injection]", 
-                            "Why you injecting Lua code? Stoopid ass hoe");
+                            "[Badger-Anticheat]: " .. Config.Messages.CommandsTriggered:gsub("{COMMAND}", blacklistedCommand));
                     end
                 end
             end
@@ -83,10 +83,11 @@ if Config.Components.AntiESX then
     RegisterNetEvent('esx:getSharedObject')
     AddEventHandler('esx:getSharedObject', function()
         TriggerServerEvent("Anticheat:ModderESX", "CONFIRMED HACKER [Getting ESX object via client code]", 
-                            "Why you injecting Lua code? Stoopid ass hoe");
+                            "[Badger-Anticheat]: " .. Config.Messages.ESXTriggered);
     end)
 end
 
+--[[ @DEPRECATED 
 if Config.Components.AntiKeys then 
     -- Prevent keys from being Released 
     Citizen.CreateThread(function()
@@ -160,6 +161,8 @@ if Config.Components.AntiKeys then
         end
     end)
 end
+]]--
+
 -- prevent infinite ammo, godmode, invisibility and ped speed hacks 
 -- Props to Anticheese Anticheat for this: [https://github.com/Bluethefurry]
 if Config.Components.AntiCheat then
@@ -231,7 +234,7 @@ Citizen.CreateThread(function()
         Wait(3000);
         local ped = NetworkIsInSpectatorMode()
         if ped == 1 then
-            TriggerServerEvent("Anticheat:SpectateTrigger", "Why are you stalking someone? Stoopid ass hoe");
+            TriggerServerEvent("Anticheat:SpectateTrigger", "[Badger-Anticheat]: " .. Config.Messages.SpectateTriggered);
         end
     end
 end)

@@ -7,7 +7,7 @@ Config = {
          AntiNoclip = true,
          AntiSpeedhack = true,
          AntiCommands = true,
-         AntiKeys = false,
+         --AntiKeys = false, -- @DEPRECATED
          AntiESX = false,
          AntiRemoveOtherPlayersWeapons = false, -- Stops players removing other players weapons. 
          AntiCancelAnimations = false, -- Stops other players cancelling other people's animations (kicking people out of cars etc.)
@@ -23,14 +23,25 @@ Config = {
         AntiFakeMessage = true,
         AntiBlacklistedEvent = true,
     },
-    KickForKeys = false,
-    BlacklistedKeys = {
+    Messages = {
+        NoClipTriggered = "Our anticheat caught you noclipping... You have been banned. You can apply for unban by providing your ban ID in your server ticket.",
+        ChatMessageTriggered = "Our anticheat caught you faking a chat message... You have been banned. You can apply for unban by providing your ban ID in your server ticket.",
+        BlacklistedEventTriggered = "Our anticheat caught you triggered a blacklisted event [{EVENT}]. You have been banned. You can apply for unban by providing your ban ID in your server ticket.",
+        BlacklistedEntity = "Our anticheat caught you creating a blacklisted entity [{ENTITY}]. You have been kicked. You may join back, but may be banned under staff's discretion.",
+        UnauthorizedResources = "Our anticheat caught you with an unauthorized resource [{RESOURCE}]. You have been banned. You can apply for unban by providing your ban ID in your server ticket.",
+        ProhibitedVariables = "Our anticheat caught you with a prohibited variable [{VARIABLE}]. You have been banned. You can apply for unban by providing your ban ID in your server ticket.",
+        CommandsTriggered = "Our anticheat caught you with a blacklisted command [{COMMAND}]. You have been banned. You can apply for unban by providing your ban ID in your server ticket.",
+        ESXTriggered = "Our anticheat caught you triggering ESX. You have been banned. You can apply for unban by providing your ban ID in your server ticket.",
+        SpectateTriggered = "Our anticheat caught you spectating somebody whilst not being staff. You have been banned. You can apply for unban by providing your ban ID in your server ticket.",
+    },
+    --KickForKeys = false, -- @DEPRECATED
+    --[[BlacklistedKeys = { -- @DEPRECATED
         {{121}, "Insert Key"}, -- Insert Key 
         {{37, 44}, "Tab + Q Keys"}, -- Tab + Q key 
         {{47, 21}, "Shift + G Keys"}, -- Shift + G key  
         {{117}, "Numpad 7 Key"}, -- Lynx Evo Menu 
         {{214}, "Delete Key"}, -- Delete Menu 
-    },
+    },]]--
     BlacklistedCommands = {
         "chocolate",
         "pk",
@@ -44,7 +55,6 @@ Config = {
         "saucy",
     },
     BlacklistedEvents = {
-	--[[
         'esx_drugs:startHarvestCoke',
         'esx_drugs:stoopHarvestCoke',
         'esx_drugs:startTransformCoke',
@@ -193,7 +203,6 @@ Config = {
         "AntiLynxR4:kick",
         "AntiLynxR4:log",
         "h:xd"
-		]]--
     },
     BlacklistedModels = {
         "rhino",

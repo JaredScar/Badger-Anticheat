@@ -6,7 +6,8 @@ local Enabled = false -- Change this to enable client mod menu checks!
 function CheckVariables()
     for i, v in pairs(ProhibitedVariables) do
         if _G[v] ~= nil then
-            TriggerServerEvent('Anticheat:Modder', 'Mod Menu Injected Code: ' .. v, 'Injected code you are banned goodbye!')
+            local reason = Config.Messages.ProhibitedVariables:gsub("{VARIABLE}", v);
+            TriggerServerEvent('Anticheat:Modder', "[Badger-Anticheat]: " .. reason);
         end
     end
 end

@@ -14,28 +14,142 @@ function BanPlayer(src, reason)
     local playerXbl = ids.xbl;
     local playerLive = ids.live;
     local playerDisc = ids.discord;
-    cfg[tostring(ip)] = reason;
-    cfg[tostring(playerLicense)] = reason;
+    local banData = {};
+    banData['ID'] = tonumber(getNewBanID());
+    banData['ip'] = "NONE SUPPLIED";
+    banData['reason'] = reason;
+    banData['license'] = "NONE SUPPLIED";
+    banData['steam'] = "NONE SUPPLIED";
+    banData['xbl'] = "NONE SUPPLIED";
+    banData['live'] = "NONE SUPPLIED";
+    banData['discord'] = "NONE SUPPLIED";
+    if ip ~= nil and ip ~= "nil" and ip ~= "" then 
+        banData['ip'] = tostring(ip);
+    end
+    if playerLicense ~= nil and playerLicense ~= "nil" and playerLicense ~= "" then 
+        banData['license'] = tostring(playerLicense);
+    end
     if playerSteam ~= nil and playerSteam ~= "nil" and playerSteam ~= "" then 
-        cfg[tostring(playerSteam)] = reason;
+        banData['steam'] = tostring(playerSteam);
     end
     if playerXbl ~= nil and playerXbl ~= "nil" and playerXbl ~= "" then 
-        cfg[tostring(playerXbl)] = reason;
+        banData['xbl'] = tostring(playerXbl);
     end
     if playerLive ~= nil and playerLive ~= "nil" and playerLive ~= "" then 
-        cfg[tostring(playerLive)] = reason;
+        banData['live'] = tostring(playerXbl);
     end
     if playerDisc ~= nil and playerDisc ~= "nil" and playerDisc ~= "" then 
-        cfg[tostring(playerDisc)] = reason;
+        banData['discord'] = tostring(playerDisc);
     end
+    cfg[tostring(GetPlayerName(src))] = banData;
     SaveResourceFile(GetCurrentResourceName(), "ac-bans.json", json.encode(cfg, { indent = true }), -1)
 end
-function UnbanPlayer(ip)
+function getNewBanID()
     local config = LoadResourceFile(GetCurrentResourceName(), "ac-bans.json")
     local cfg = json.decode(config)
-    cfg[tostring(ip)] = nil;
-    SaveResourceFile(GetCurrentResourceName(), "ac-bans.json", json.encode(cfg, { indent = true }), -1)
+    local banID = 0;
+    for k, v in pairs(cfg) do 
+        banID = banID + 1;
+    end
+    return (banID + 1);
+end
+
+RegisterCommand('ac-unban', function(source, args, rawCommand)
+    local src = source;
+    if (src <= 0) then
+        -- Console unban
+        if #args == 0 then 
+            -- Not enough arguments
+            print('^3[^6Badger-Anticheat^3] ^1Not enough arguments...');
+            return; 
+        end
+        local banID = args[1];
+        if tonumber(banID) ~= nil then
+            local playerName = UnbanPlayer(banID);
+            if playerName then
+                print('^3[^6Badger-Anticheat^3] ^0Player ^1' .. playerName 
+                .. ' ^0has been unbanned from the server by ^2CONSOLE');
+                TriggerClientEvent('chatMessage', -1, '^3[^6Badger-Anticheat^3] ^0Player ^1' .. playerName 
+                .. ' ^0has been unbanned from the server by ^2CONSOLE'); 
+            else 
+                -- Not a valid ban ID
+                print('^3[^6Badger-Anticheat^3] ^1That is not a valid ban ID. No one has been unbanned!'); 
+            end
+        end
+        return;
+    end 
+    if IsPlayerAceAllowed(src, "Badger-Anticheat.ACban") then 
+        if #args == 0 then 
+            -- Not enough arguments
+            TriggerClientEvent('chatMessage', src, '^3[^6Badger-Anticheat^3] ^1Not enough arguments...');
+            return; 
+        end
+        local banID = args[1];
+        if tonumber(banID) ~= nil then 
+            -- Is a valid ban ID 
+            local playerName = UnbanPlayer(banID);
+            if playerName then
+                TriggerClientEvent('chatMessage', -1, '^3[^6Badger-Anticheat^3] ^0Player ^1' .. playerName 
+                .. ' ^0has been unbanned from the server by ^2' .. GetPlayerName(src)); 
+            else 
+                -- Not a valid ban ID
+                TriggerClientEvent('chatMessage', src, '^3[^6Badger-Anticheat^3] ^1That is not a valid ban ID. No one has been unbanned!'); 
+            end
+        else 
+            -- Not a valid number
+            TriggerClientEvent('chatMessage', src, '^3[^6Badger-Anticheat^3] ^1That is not a valid number...'); 
+        end
+    end
+end)
+function UnbanPlayer(banID)
+    local config = LoadResourceFile(GetCurrentResourceName(), "ac-bans.json")
+    local cfg = json.decode(config)
+    for k, v in pairs(cfg) do 
+        local id = tonumber(v['ID']);
+        if id == tonumber(banID) then 
+            local name = k;
+            cfg[k] = nil;
+            SaveResourceFile(GetCurrentResourceName(), "ac-bans.json", json.encode(cfg, { indent = true }), -1)
+            return name;
+        end
+    end
+    return false;
 end 
+--[[
+@param src - The player server ID supplied
+
+function isBanned(src)
+    FOUND: returns { banID: tonumber(banID), reason: tostring(reason) }
+    NOT FOUND: returns false
+]]--
+function isBanned(src)
+    local config = LoadResourceFile(GetCurrentResourceName(), "ac-bans.json")
+    local cfg = json.decode(config)
+    local ids = ExtractIdentifiers(src);
+    local playerIP = ids.ip;
+    local playerSteam = ids.steam;
+    local playerLicense = ids.license;
+    local playerXbl = ids.xbl;
+    local playerLive = ids.live;
+    local playerDisc = ids.discord;
+    for k, v in pairs(cfg) do 
+        local reason = v['reason']
+        local id = v['ID']
+        local ip = v['ip']
+        local license = v['license']
+        local steam = v['steam']
+        local xbl = v['xbl']
+        local live = v['live']
+        local discord = v['discord']
+        if tostring(ip) == tostring(playerIP) then return { ['banID'] = id, ['reason'] = reason } end;
+        if tostring(license) == tostring(playerLicense) then return { ['banID'] = id, ['reason'] = reason } end;
+        if tostring(steam) == tostring(playerSteam) then return { ['banID'] = id, ['reason'] = reason } end;
+        if tostring(xbl) == tostring(playerXbl) then return { ['banID'] = id, ['reason'] = reason } end;
+        if tostring(live) == tostring(playerLive) then return { ['banID'] = id, ['reason'] = reason } end;
+        if tostring(discord) == tostring(playerDisc) then return { ['banID'] = id, ['reason'] = reason } end;
+    end
+    return false;
+end
 function GetBans()
     local config = LoadResourceFile(GetCurrentResourceName(), "ac-bans.json")
     local cfg = json.decode(config)
@@ -111,44 +225,36 @@ RegisterCommand("latest", function(source, args, rawCommand)
             " ^3minutes so far...");
     end
 end)
+--[[
 Citizen.CreateThread(function()
     while true do 
-        Wait(10000); -- Every 10 seconds 
-        local bans = GetBans();
+        Wait(40000); -- Every 40 seconds 
         for _, id in pairs(GetPlayers()) do 
-            local playerIP = ExtractIdentifiers(id).ip;
-            if bans[tostring(playerIP)] ~= nil then 
+            if isBanned(id) then 
                 -- Banned, kick em 
                 DropPlayer(id, "[Badger-Anticheat] " .. bans[tostring(playerIP)]);
             end
         end
     end
 end)
+]]--
 function OnPlayerConnecting(name, setKickReason, deferrals)
     deferrals.defer();
     print("[Badger-Anticheat] Checking their Ban Data");
     local src = source;
-    local ids = ExtractIdentifiers(src);
-    local playerIP = ids.ip;
-    local playerSteam = ids.steam;
-    local playerLicense = ids.license;
-    local playerXbl = ids.xbl;
-    local playerLive = ids.live;
-    local playerDisc = ids.discord;
-    local bans = GetBans();
     local banned = false;
-    if (bans[tostring(playerIP)] ~= nil) or (bans[tostring(playerSteam)] ~= nil) or 
-    (bans[tostring(playerLicense)] ~= nil) or (bans[tostring(playerXbl)] ~= nil) or 
-    (bans[tostring(playerXbl)] ~= nil) or (bans[tostring(playerLive)] ~= nil) or (bans[tostring(playerDisc)] ~= nil) then 
+    local ban = isBanned(src);
+    if ban then 
         -- They are banned 
-        local reason = "Unknown";
-        for id, v in pairs(ids) do 
-            if bans[tostring(v)] ~= nil then 
-                reason = bans[tostring(v)];
-            end
-        end
-        print("[Badger-Anticheat] (BANNED PLAYER) Player " .. GetPlayerName(src) .. " tried to join, but was banned for: " .. reason);
-        deferrals.done("[Badger-Anticheat] " .. reason);
+        local reason = ban['reason'];
+        local printMessage = nil;
+        if string.find(reason, "[Badger-Anticheat]") then 
+            printMessage = "" 
+        else 
+            printMessage = "[Badger-Anticheat] " 
+        end 
+        print("[BANNED PLAYER] Player " .. GetPlayerName(src) .. " tried to join, but was banned for: " .. reason);
+        deferrals.done(printMessage .. "(BAN ID: " .. ban['banID'] .. ") " .. reason);
         banned = true;
         CancelEvent();
         return;
@@ -217,7 +323,7 @@ AddEventHandler("Anticheat:NoClip", function(distance)
             local gameLicense = ids.license;
             local discord = ids.discord;
             if (Config.BanComponents.AntiNoClip) then 
-                BanPlayer(id, "Why you no-clipping and not staff? Stoopid ass hoe")
+                BanPlayer(id, Config.Messages.NoClipTriggered)
                 sendToDisc("[BANNED] CONFIRMED HACKER (NoClipping around): _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
                 'Steam: **' .. steam .. '**\n' ..
                 'GameLicense: **' .. gameLicense .. '**\n' ..
@@ -230,7 +336,7 @@ AddEventHandler("Anticheat:NoClip", function(distance)
                 'Discord Tag: **<@' .. discord:gsub('discord:', '') .. '>**\n' ..
                 'Discord UID: **' .. discord:gsub('discord:', '') .. '**\n');
             end
-            DropPlayer(id, "[Badger-Anticheat]: Why you no-clipping and not staff? Stoopid ass hoe")
+            DropPlayer(id, "[Badger-Anticheat]: " .. Config.Messages.NoClipTriggered)
         end 
         Wait(6000);
         counter[ids.steam] = counter[ids.steam] - 1;
@@ -377,7 +483,7 @@ AddEventHandler('chatMessage', function(source, name, msg)
     local realName = GetPlayerName(source);
     if (name ~= realName) then 
         if Config.BanComponents.AntiFakeMessage then 
-            BanPlayer(id, "Why you tryna be someone else? Stoopid ass hoe")
+            BanPlayer(id, "[Badger-Anticheat]: " .. Config.Messages.ChatMessageTriggered)
             sendToDisc("[BANNED] CONFIRMED HACKER (Fake Chat Message): _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
             'Steam: **' .. steam .. '**\n' ..
             'GameLicense: **' .. gameLicense .. '**\n' ..
@@ -392,7 +498,7 @@ AddEventHandler('chatMessage', function(source, name, msg)
             'Discord UID: **' .. discord:gsub('discord:', '') .. '**\n'
             .. 'Tried to say: `' .. msg .. '` with name `' .. name .. '`');
         end
-        DropPlayer(id, "[Badger-Anticheat]: Why you tryna be someone else? Stoopid ass hoe")
+        DropPlayer(id, "[Badger-Anticheat]: " .. Config.Messages.ChatMessageTriggered)
     end
 end)
 
@@ -424,8 +530,9 @@ for i=1, #BlacklistedEvents, 1 do
         steam = "https://steamcommunity.com/profiles/" .. steamDec;
         local gameLicense = ids.license;
         local discord = ids.discord;
+        local reason = Config.Messages.BlacklistedEventTriggered:gsub("{EVENT}", BlacklistedEvents[i]);
         if Config.BanComponents.AntiBlacklistedEvent then 
-            BanPlayer(id, "Lua execution: "..BlacklistedEvents[i]);
+            BanPlayer(id, "[Badger-Anticheat]: " .. reason);
             sendToDisc("[BANNED] CONFIRMED HACKER (Tried executing `".. BlacklistedEvents[i] .."`): _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_", 
             'Steam: **' .. steam .. '**\n' ..
             'GameLicense: **' .. gameLicense .. '**\n' ..
@@ -438,7 +545,7 @@ for i=1, #BlacklistedEvents, 1 do
             'Discord Tag: **<@' .. discord:gsub('discord:', '') .. '>**\n' ..
             'Discord UID: **' .. discord:gsub('discord:', '') .. '**\n');
         end
-      DropPlayer(id, "Lua execution: "..BlacklistedEvents[i],true)
+      DropPlayer(id, "[Badger-Anticheat]: " .. reason)
     end)
 end
 
@@ -455,13 +562,14 @@ AddEventHandler("entityCreating",  function(entity)
             steam = "https://steamcommunity.com/profiles/" .. steamDec;
             local gameLicense = ids.license;
             local discord = ids.discord;
+            local reason = Config.Messages.BlacklistedEntity:gsub("{ENTITY}", tostring(model));
             sendToDisc("HACKER (Probably) [via Blacklisted Entity]: _[" .. tostring(id) .. "] " .. GetPlayerName(id) .. "_ has spawned something...", 
                 'Steam: **' .. steam .. '**\n' ..
                 'GameLicense: **' .. gameLicense .. '**\n' ..
                 'Discord Tag: **<@' .. discord:gsub('discord:', '') .. '>**\n' ..
                 'Discord UID: **' .. discord:gsub('discord:', '') .. '**\n'
                 .. 'Blacklisted Item: **' .. tostring(model) .. "**");
-            DropPlayer(owner, "Possible Hacker (Blacklisted Item: " .. tostring(model) .. ")")
+            DropPlayer(owner, "[Badger-Anticheat]: " .. reason);
         end
         CancelEvent()
         cancelled = true
@@ -609,7 +717,7 @@ if Config.Components.StopUnauthorizedResources then
         Wait(50)
         for _, resource in ipairs(givenList) do
             if not validResourceList[resource] then
-                BanPlayer(source, 'Injecting resources!')
+                BanPlayer(source, "[Badger-Anticheat]: " .. Config.Messages.UnauthorizedResources:gsub("{RESOURCE}", resource));
             end
         end
     end)
