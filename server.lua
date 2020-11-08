@@ -1,6 +1,9 @@
-BlacklistedEvents = Config.BlacklistedEvents;
-
+-- Server Config:
 webhookURL = ''
+
+
+-- CODE [DO NOT TOUCH]:
+BlacklistedEvents = Config.BlacklistedEvents;
 
 local counter = {}
 
@@ -53,6 +56,62 @@ function getNewBanID()
     end
     return (banID + 1);
 end
+
+RegisterNetEvent('Anticheat:CheckStaff')
+AddEventHandler('Anticheat:CheckStaff', function()
+    local src = source;
+    if IsPlayerAceAllowed(src, 'Anticheat.Bypass') then 
+        TriggerClientEvent('Anticheat:CheckStaffReturn', src, true);
+    else 
+        TriggerClientEvent('Anticheat:CheckStaffReturn', src, false);
+    end
+end)
+
+RegisterNetEvent('Anticheat:ScreenshotSubmit')
+AddEventHandler('Anticheat:ScreenshotSubmit', function()
+    local src = source;
+    if not IsPlayerAceAllowed(src, "Anticheat.Bypass") then 
+        local screenshotOptions = {
+            encoding = 'png',
+            quality = 1
+        }    
+        local ids = ExtractIdentifiers(src);
+        local playerIP = ids.ip;
+        local playerSteam = ids.steam;
+        local playerLicense = ids.license;
+        local playerXbl = ids.xbl;
+        local playerLive = ids.live;
+        local playerDisc = ids.discord;
+        exports['discord-screenshot']:requestCustomClientScreenshotUploadToDiscord(src, webhookURL, screenshotOptions, {
+            username = '[BADGER-ANTICHEAT] https://github.com/JaredScar/Badger-Anticheat',
+            avatar_url = 'https://forum.cfx.re/user_avatar/forum.cfx.re/officialbadger/120/258293_2.png',
+            content = '',
+            embeds = {
+                {
+                    color = 16711680,
+                    author = {
+                        name = '[BADGER-ANTICHEAT]',
+                        icon_url = 'https://forum.cfx.re/user_avatar/forum.cfx.re/officialbadger/120/258293_2.png'
+                    },
+                    title = '[Possible Modder] Player has triggered blacklisted keys...',
+                    description = '**__Player Identifiers:__** \n\n'
+                    .. '**Server ID:** `' .. src .. '`\n\n'
+                    .. '**Username:** `' .. GetPlayerName(src) .. '`\n\n'
+                    .. '**IP:** `' .. playerIP .. '`\n\n'
+                    .. '**Steam:** `' .. playerSteam .. '`\n\n'
+                    .. '**License:** `' .. playerLicense .. '`\n\n'
+                    .. '**Xbl:** `' .. playerXbl .. '`\n\n'
+                    .. '**Live:** `' .. playerLive .. '`\n\n'
+                    .. '**Discord:** `' .. playerDisc .. '`\n\n',
+                    footer = {
+                        text = "[" .. src .. "]" .. GetPlayerName(src),
+                    }
+                }
+            }
+        });
+    end
+end)
+
 
 RegisterCommand('ac-unban', function(source, args, rawCommand)
     local src = source;
@@ -620,11 +679,8 @@ function sendToDisc(title, message, footer)
             },
         }
     }
-    -- Start
-    -- TODO Input Webhook
     PerformHttpRequest(webhookURL, 
     function(err, text, headers) end, 'POST', json.encode({username = name, embeds = embed}), { ['Content-Type'] = 'application/json' })
-  -- END
 end
 
 

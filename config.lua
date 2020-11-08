@@ -7,19 +7,19 @@ Config = {
          AntiNoclip = true,
          AntiSpeedhack = true,
          AntiCommands = true,
-         --AntiKeys = false, -- @DEPRECATED
-         AntiESX = false,
-         AntiRemoveOtherPlayersWeapons = false, -- Stops players removing other players weapons. 
-         AntiCancelAnimations = false, -- Stops other players cancelling other people's animations (kicking people out of cars etc.)
-         StopOtherPlayersGivingEachOtherWeapons = false, -- Stops other players giving other people weapons (If you have an admin menu to give weapons this may be an issue. Giving weapons with esx inventories or etc will not cause any issues!)
-         ModMenuChecks = false, -- (READ IMPORTANT) Will check in your resources for any injected code being variables/functions that has been added to our detection lists! Don't forget to also enable it on the client script! In acloader.lua! Will add to every resource so please do not change the AntiCheat Name It must stay as the name it has.  
-         StopUnauthorizedResources = false, -- Will check for resources that have not been allowed by the server! (Common with Eulen tick box menu loading options)
+         AntiKeys = true, 
+         AntiESX = true,
+         AntiRemoveOtherPlayersWeapons = true, -- Stops players removing other players weapons. 
+         AntiCancelAnimations = true, -- Stops other players cancelling other people's animations (kicking people out of cars etc.)
+         StopOtherPlayersGivingEachOtherWeapons = true, -- Stops other players giving other people weapons (If you have an admin menu to give weapons this may be an issue. Giving weapons with esx inventories or etc will not cause any issues!)
+         ModMenuChecks = true, -- (READ IMPORTANT) Will check in your resources for any injected code being variables/functions that has been added to our detection lists! Don't forget to also enable it on the client script! In acloader.lua! Will add to every resource so please do not change the AntiCheat Name It must stay as the name it has.  
+         StopUnauthorizedResources = true, -- Will check for resources that have not been allowed by the server! (Common with Eulen tick box menu loading options)
     },
     BanComponents = {
         AntiSpectate = true,
-        AntiNoClip = false,
+        AntiNoClip = true,
         AntiCommands = true,
-        AntiESX = false,
+        AntiESX = true,
         AntiFakeMessage = true,
         AntiBlacklistedEvent = true,
     },
@@ -34,14 +34,14 @@ Config = {
         ESXTriggered = "Our anticheat caught you triggering ESX. You have been banned. You can apply for unban by providing your ban ID in your server ticket.",
         SpectateTriggered = "Our anticheat caught you spectating somebody whilst not being staff. You have been banned. You can apply for unban by providing your ban ID in your server ticket.",
     },
-    --KickForKeys = false, -- @DEPRECATED
-    --[[BlacklistedKeys = { -- @DEPRECATED
+    KickForKeys = false, 
+    BlacklistedKeys = { 
         {{121}, "Insert Key"}, -- Insert Key 
         {{37, 44}, "Tab + Q Keys"}, -- Tab + Q key 
         {{47, 21}, "Shift + G Keys"}, -- Shift + G key  
         {{117}, "Numpad 7 Key"}, -- Lynx Evo Menu 
         {{214}, "Delete Key"}, -- Delete Menu 
-    },]]--
+    },
     BlacklistedCommands = {
         "chocolate",
         "pk",

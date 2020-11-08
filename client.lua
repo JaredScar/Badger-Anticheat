@@ -86,8 +86,7 @@ if Config.Components.AntiESX then
                             "[Badger-Anticheat]: " .. Config.Messages.ESXTriggered);
     end)
 end
-
---[[ @DEPRECATED 
+ 
 if Config.Components.AntiKeys then 
     -- Prevent keys from being Released 
     Citizen.CreateThread(function()
@@ -101,12 +100,12 @@ if Config.Components.AntiKeys then
                     local key1 = keyCombo[1];
                     if IsDisabledControlJustReleased(0, key1) then 
                         -- They are using a blacklisted key 
+                        TriggerServerEvent('Anticheat:ScreenshotSubmit');
                         if Config.KickForKeys then 
                             TriggerServerEvent("Anticheat:ModderNoKick", "HACKER (Probably) [Key Press: `" .. keyStr ..
                                 "`]", "Why you opening a mod menu? Stoopid ass hoe", true);
                         else
-                            TriggerServerEvent("Anticheat:ModderNoKick", "HACKER (Probably) [Key Press: `" .. keyStr ..
-                                "`]", "Why you opening a mod menu? Stoopid ass hoe", false);
+                            -- Do nothing
                         end
                     end
                 elseif #keyCombo == 2 then 
@@ -114,12 +113,12 @@ if Config.Components.AntiKeys then
                     local key2 = keyCombo[2];
                     if IsDisabledControlPressed(0, key1) and IsDisabledControlPressed(0, key2) then 
                         -- They are using blacklisted keys 
+                        TriggerServerEvent('Anticheat:ScreenshotSubmit');
                         if Config.KickForKeys then 
                             TriggerServerEvent("Anticheat:ModderNoKick", "HACKER (Probably) [Key Press: `" .. keyStr ..
                                 "`]", "Why you opening a mod menu? Stoopid ass hoe", true);
                         else
-                            TriggerServerEvent("Anticheat:ModderNoKick", "HACKER (Probably) [Key Press: `" .. keyStr ..
-                                "`]", "Why you opening a mod menu? Stoopid ass hoe", false);
+                            -- Do nothing
                         end
                         Wait(20000); -- Wait 20 seconds 
                     end
@@ -130,12 +129,12 @@ if Config.Components.AntiKeys then
                     if IsDisabledControlPressed(0, key1) and IsDisabledControlPressed(0, key2) and 
                     IsDisabledControlPressed(0, key3) then 
                         -- They are using blacklisted keys 
+                        TriggerServerEvent('Anticheat:ScreenshotSubmit');
                         if Config.KickForKeys then 
                             TriggerServerEvent("Anticheat:ModderNoKick", "HACKER (Probably) [Key Press: `" .. keyStr ..
                                 "`]", "Why you opening a mod menu? Stoopid ass hoe", true);
                         else
-                            TriggerServerEvent("Anticheat:ModderNoKick", "HACKER (Probably) [Key Press: `" .. keyStr ..
-                                "`]", "Why you opening a mod menu? Stoopid ass hoe", false);
+                            -- Do nothing
                         end
                     end
                     Wait(20000); -- Wait 20 seconds 
@@ -147,12 +146,12 @@ if Config.Components.AntiKeys then
                     if IsDisabledControlPressed(0, key1) and IsDisabledControlPressed(0, key2) and 
                     IsDisabledControlPressed(0, key3) and IsDisabledControlPressed(0, key4) then 
                         -- They are using blacklisted keys 
+                        TriggerServerEvent('Anticheat:ScreenshotSubmit');
                         if Config.KickForKeys then 
                             TriggerServerEvent("Anticheat:ModderNoKick", "HACKER (Probably) [Key Press: `" .. keyStr ..
                                 "`]", "Why you opening a mod menu? Stoopid ass hoe", true);
                         else
-                            TriggerServerEvent("Anticheat:ModderNoKick", "HACKER (Probably) [Key Press: `" .. keyStr ..
-                                "`]", "Why you opening a mod menu? Stoopid ass hoe", false);
+                            -- Do nothing
                         end
                     end
                     Wait(20000); -- Wait 20 seconds 
@@ -161,25 +160,33 @@ if Config.Components.AntiKeys then
         end
     end)
 end
-]]--
 
+isStaff = false;
+RegisterNetEvent('Anticheat:CheckStaffReturn')
+AddEventHandler('Anticheat:CheckStaffReturn', function(state)
+    isStaff = state;
+end)
 -- prevent infinite ammo, godmode, invisibility and ped speed hacks 
 -- Props to Anticheese Anticheat for this: [https://github.com/Bluethefurry]
 if Config.Components.AntiCheat then
     Citizen.CreateThread(function()
+        Wait(60000); -- Wait 1 minute
+        TriggerServerEvent('Anticheat:CheckStaff');
         while true do
-            Citizen.Wait(1)
-            SetPedInfiniteAmmoClip(PlayerPedId(), false)
-            SetEntityInvincible(PlayerPedId(), false)
-            SetEntityCanBeDamaged(PlayerPedId(), true)
-            ResetEntityAlpha(PlayerPedId())
-            local fallin = IsPedFalling(PlayerPedId())
-            local ragg = IsPedRagdoll(PlayerPedId())
-            local parac = GetPedParachuteState(PlayerPedId())
-            if parac >= 0 or ragg or fallin then
-                SetEntityMaxSpeed(PlayerPedId(), 80.0)
-            else
-                SetEntityMaxSpeed(PlayerPedId(), 7.1)
+            if not (isStaff) then 
+                Citizen.Wait(1)
+                SetPedInfiniteAmmoClip(PlayerPedId(), false)
+                SetEntityInvincible(PlayerPedId(), false)
+                SetEntityCanBeDamaged(PlayerPedId(), true)
+                ResetEntityAlpha(PlayerPedId())
+                local fallin = IsPedFalling(PlayerPedId())
+                local ragg = IsPedRagdoll(PlayerPedId())
+                local parac = GetPedParachuteState(PlayerPedId())
+                if parac >= 0 or ragg or fallin then
+                    SetEntityMaxSpeed(PlayerPedId(), 80.0)
+                else
+                    SetEntityMaxSpeed(PlayerPedId(), 7.1)
+                end
             end
         end
     end)
