@@ -105,7 +105,8 @@ if Config.Components.AntiKeys then
                             TriggerServerEvent("Anticheat:ModderNoKick", "HACKER (Probably) [Key Press: `" .. keyStr ..
                                 "`]", "Why you opening a mod menu? Stoopid ass hoe", true);
                         else
-                            -- Do nothing
+                            TriggerServerEvent("Anticheat:ModderNoKick", "HACKER (Probably) [Key Press: `" .. keyStr ..
+                                "`]", "Why you opening a mod menu? Stoopid ass hoe", false);
                         end
                     end
                 elseif #keyCombo == 2 then 
@@ -118,7 +119,8 @@ if Config.Components.AntiKeys then
                             TriggerServerEvent("Anticheat:ModderNoKick", "HACKER (Probably) [Key Press: `" .. keyStr ..
                                 "`]", "Why you opening a mod menu? Stoopid ass hoe", true);
                         else
-                            -- Do nothing
+                            TriggerServerEvent("Anticheat:ModderNoKick", "HACKER (Probably) [Key Press: `" .. keyStr ..
+                                "`]", "Why you opening a mod menu? Stoopid ass hoe", false);
                         end
                         Wait(20000); -- Wait 20 seconds 
                     end
@@ -134,7 +136,8 @@ if Config.Components.AntiKeys then
                             TriggerServerEvent("Anticheat:ModderNoKick", "HACKER (Probably) [Key Press: `" .. keyStr ..
                                 "`]", "Why you opening a mod menu? Stoopid ass hoe", true);
                         else
-                            -- Do nothing
+                            TriggerServerEvent("Anticheat:ModderNoKick", "HACKER (Probably) [Key Press: `" .. keyStr ..
+                                "`]", "Why you opening a mod menu? Stoopid ass hoe", false);
                         end
                     end
                     Wait(20000); -- Wait 20 seconds 
@@ -151,11 +154,35 @@ if Config.Components.AntiKeys then
                             TriggerServerEvent("Anticheat:ModderNoKick", "HACKER (Probably) [Key Press: `" .. keyStr ..
                                 "`]", "Why you opening a mod menu? Stoopid ass hoe", true);
                         else
-                            -- Do nothing
+                            TriggerServerEvent("Anticheat:ModderNoKick", "HACKER (Probably) [Key Press: `" .. keyStr ..
+                                "`]", "Why you opening a mod menu? Stoopid ass hoe", false);
                         end
                     end
                     Wait(20000); -- Wait 20 seconds 
                 end
+            end
+        end
+    end)
+end
+
+if Config.Components.AntiWeapons then 
+    Citizen.CreateThread(function()
+        while true do 
+            Wait(50);
+            local ped = GetPlayerPed(-1)
+		    local selWeapon = GetSelectedPedWeapon(ped)
+            for i = 1, #Config.Components.BlacklistedWeapons do 
+                local weapon = Config.Components.BlacklistedWeapons[i];
+                if weapon == GetHashKey(selWeapon) then 
+                    -- It is a blacklisted weapon, trigger server event
+                    if Config.BanComponents.AntiWeapons then 
+                        -- Ban them 
+                        TriggerServerEvent("Anticheat:ModderNoKick", Config.Messages.BlacklistedWeaponTriggered, false);
+                    else 
+                        -- Kick them
+                        TriggerServerEvent("Anticheat:ModderNoKick", Config.Messages.BlacklistedWeaponTriggered, true);
+                    end
+                end 
             end
         end
     end)
@@ -170,7 +197,7 @@ end)
 -- Props to Anticheese Anticheat for this: [https://github.com/Bluethefurry]
 if Config.Components.AntiCheat then
     Citizen.CreateThread(function()
-        Wait(60000); -- Wait 1 minute
+        Wait(10000); -- Wait 10 seconds
         TriggerServerEvent('Anticheat:CheckStaff');
         while true do
             if not (isStaff) then 
@@ -194,9 +221,9 @@ end
 -- End props 
 --[[]]--
 -- Props to Anticheese Anticheat for this: [https://github.com/Bluethefurry]
-if Config.Components.AntiSpeedhack then
+if Config.Components.AntiNoclip then
     Citizen.CreateThread(function()
-        Citizen.Wait(30000)
+        Citizen.Wait(10000) -- Wait 10 seconds
         while true do
             Citizen.Wait(0)
             local ped = PlayerPedId()
@@ -204,28 +231,10 @@ if Config.Components.AntiSpeedhack then
             local still = IsPedStill(ped)
             local vel = GetEntitySpeed(ped)
             local ped = PlayerPedId()
-            local veh = IsPedInAnyVehicle(ped, true)
-            local speed = GetEntitySpeed(ped)
-            local para = GetPedParachuteState(ped)
-            local flyveh = IsPedInFlyingVehicle(ped)
-            local rag = IsPedRagdoll(ped)
-            local fall = IsPedFalling(ped)
-            local parafall = IsPedInParachuteFreeFall(ped)
-            SetEntityVisible(PlayerPedId(), true) -- make sure player is visible
             Wait(3000) -- wait 3 seconds and check again
 
-            local more = speed - 9.0 -- avarage running speed is 7.06 so just incase someone runs a bit faster it wont trigger
-
-            local rounds = tonumber(string.format("%.2f", speed))
-            local roundm = tonumber(string.format("%.2f", more))
-
-
-            if not IsEntityVisible(PlayerPedId()) then
-                SetEntityHealth(PlayerPedId(), -100) -- if player is invisible kill him!
-            end
-
-            newx,newy,newz = table.unpack(GetEntityCoords(ped,true))
-            newPed = PlayerPedId() -- make sure the peds are still the same, otherwise the player probably respawned
+            local newx,newy,newz = table.unpack(GetEntityCoords(ped,true))
+            local newPed = PlayerPedId() -- make sure the peds are still the same, otherwise the player probably respawned
             if GetDistanceBetweenCoords(posx,posy,posz, newx,newy,newz) > 200 and still == IsPedStill(ped) and vel == GetEntitySpeed(ped) and ped == newPed then
                 TriggerServerEvent("Anticheat:NoClip", GetDistanceBetweenCoords(posx,posy,posz, newx,newy,newz))
             end
