@@ -29,7 +29,7 @@ Badger-Anticheat can catch modders noclipping, spectating, and even faking chat 
 
 https://github.com/DevLanceGood
 
-https://github.com/Bluethefurry
+https://github.com/Blumlaut
 
 ## Commands
 Currenty there are no commands for this anticheat :(
@@ -145,4 +145,4 @@ Config = {
 }
 ```
 ## Download
-https://github.com/JaredScar/Badger-Anticheat
+https://github.com/JaredScar/Badger-Anticheat/archive/master.zip
