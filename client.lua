@@ -171,8 +171,8 @@ if Config.Components.AntiWeapons then
             Wait(50);
             local ped = GetPlayerPed(-1)
 		    local selWeapon = GetSelectedPedWeapon(ped)
-            for i = 1, #Config.Components.BlacklistedWeapons do 
-                local weapon = Config.Components.BlacklistedWeapons[i];
+            for i = 1, #Config.BlacklistedWeapons do 
+                local weapon = Config.BlacklistedWeapons[i];
                 if weapon == GetHashKey(selWeapon) then 
                     -- It is a blacklisted weapon, trigger server event
                     if Config.BanComponents.AntiWeapons then 
