@@ -303,6 +303,7 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
     local src = source;
     local banned = false;
     local ban = isBanned(src);
+    Citizen.Wait(100);
     if ban then 
         -- They are banned 
         local reason = ban['reason'];
@@ -319,7 +320,6 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
         return;
     end
     if not banned then 
-        Citizen.Wait(1);
         deferrals.done();
     end
 end
