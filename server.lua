@@ -319,6 +319,7 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
         return;
     end
     if not banned then 
+        Citizen.Wait(1);
         deferrals.done();
     end
 end
