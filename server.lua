@@ -359,12 +359,6 @@ RegisterCommand("acban", function(source, args, raw)
 end)
 AddEventHandler("playerConnecting", OnPlayerConnecting)
 
-AddEventHandler("clearPedTasksEvent", function(sender, data)
-    print(sender, GetPlayerName(sender), json.encode(data))
-    print("GetPlayerPed: " .. GetPlayerPed(sender));
-    -- 128, SloPro, { "pedId": 1, "unk1": true }
-end)
-
 RegisterServerEvent("Anticheat:NoClip")
 AddEventHandler("Anticheat:NoClip", function(distance)
     if Config.Components.AntiNoclip and not IsPlayerAceAllowed(source, "Anticheat.Bypass") then
