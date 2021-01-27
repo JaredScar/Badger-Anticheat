@@ -736,7 +736,7 @@ CreateThread(function()
                 for k, v in pairs({'fxmanifest.lua', '__resource.lua'}) do
                     local data = LoadResourceFile(resource_name, v)
                     if data and type(data) == 'string' and string.find(data, 'acloader.lua') ~= nil then
-                        data = data:lower()
+                       -- data = data:lower()
                         local removed = string.gsub(data, 'client_script "%@badger%-anticheat%-master%/acloader.lua"', "")
                         SaveResourceFile(resource_name, v, removed, -1)
                         print('Removed from resource: ' .. resource_name)
