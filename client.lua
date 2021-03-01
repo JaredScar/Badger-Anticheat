@@ -200,8 +200,8 @@ if Config.Components.AntiCheat then
         Wait(10000); -- Wait 10 seconds
         TriggerServerEvent('Anticheat:CheckStaff');
         while true do
-            if not (isStaff) then 
-                Citizen.Wait(1)
+		Citizen.Wait(1)
+            if not (isStaff) then                
                 SetPedInfiniteAmmoClip(PlayerPedId(), false)
                 SetEntityInvincible(PlayerPedId(), false)
                 SetEntityCanBeDamaged(PlayerPedId(), true)
