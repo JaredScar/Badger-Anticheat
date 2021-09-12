@@ -15,6 +15,7 @@ Config = {
          ModMenuChecks = true, -- (READ IMPORTANT) Will check in your resources for any injected code being variables/functions that has been added to our detection lists! Don't forget to also enable it on the client script! In acloader.lua! Will add to every resource so please do not change the AntiCheat Name It must stay as the name it has.  
          StopUnauthorizedResources = true, -- Will check for resources that have not been allowed by the server! (Common with Eulen tick box menu loading options)
     },
+    Anticheat.AntiResourceStop = false
     BanComponents = {
         AntiSpectate = true,
         AntiNoClip = true,
