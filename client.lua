@@ -272,3 +272,30 @@ CreateThread(function()
     end
 end)
 end 
+
+
+     if Anticheat.AntiResourceStop and not IsPlayerAceAllowed(source, "Anticheat.Bypass") then 
+        AddEventHandler("onResourceStop", function(res)
+            if res == GetCurrentResourceName() then
+                TriggerServerEvent("VAC:resourcestopandstart", "[Aspect-AC]: " .. Aspect.banmessages.resourcestop);
+                Citizen.Wait(100)
+                CancelEvent()
+            else
+                TriggerServerEvent("VAC:resourcestopandstart", "[Aspect-AC]: " .. Aspect.banmessages.resourcestop);
+                Citizen.Wait(100)
+                CancelEvent()
+            end
+        end)
+
+        AddEventHandler("onClientResourceStop", function(res)
+            if res == GetCurrentResourceName() then
+                TriggerServerEvent("VAC:resourcestopandstart", "[Aspect-AC]: " .. Aspect.banmessages.resourcestop);
+                Citizen.Wait(100)
+                CancelEvent()
+            else
+                TriggerServerEvent("VAC:resourcestopandstart", "[Aspect-AC]: " .. Aspect.banmessages.resourcestop);
+                Citizen.Wait(100)
+                CancelEvent()
+            end
+        end)
+    end
