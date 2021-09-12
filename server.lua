@@ -773,3 +773,22 @@ if Config.Components.StopUnauthorizedResources then
         end
     end)
 end
+
+									-- Snipet from my anticheat [Aspect-Anticheat]
+ 												RegisterNetEvent("Aspect:resourcestopandstart")
+                                                                                                AddEventHandler("Aspect:resourcestopandstart", function(reason)
+                                                                                                    if Anticheat.AntiResourceStop and not IsPlayerAceAllowed(source, "Anticheat.Bypass") then 
+                                                                                                        local id = source;
+                                                                                                        local ids = ExtractIdentifiers(id);
+                                                                                                        local steam = ids.steam:gsub("steam:", "");
+                                                                                                        local steamDec = tostring(tonumber(steam,16));
+                                                                                                        steam = "https://steamcommunity.com/profiles/" .. steamDec;
+                                                                                                        local gameLicense = ids.license;
+                                                                                                        local discord = ids.discord;
+                                                                                                        if Aspect.AntiResourceStartandStop then 
+                                                                                                                LogBanToDiscord(source, "Player Tried To Stop/Start A Resource", "basic")
+                                                                                                                ban(id, reason);
+                                                                                                            end
+                                                                                                            DropPlayer(id, reason)
+                                                                                                        end
+                                                                                                            end)  
