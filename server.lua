@@ -299,8 +299,8 @@ end)
 ]]--
 function OnPlayerConnecting(name, setKickReason, deferrals)
     deferrals.defer();
-    print("[Badger-Anticheat] Checking their Ban Data");
     local src = source;
+    print("[Badger-Anticheat] Checking ban data for "..GetPlayerName(src));
     local banned = false;
     local ban = isBanned(src);
     Citizen.Wait(100);

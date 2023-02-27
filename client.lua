@@ -1,10 +1,7 @@
-
-
 function Draw3DText(text, radius, pos)
-    if Vdist2(GetEntityCoords(PlayerPedId(), false), pos.x,pos.y,pos.z) < (radius) then
+    if #(GetEntityCoords(PlayerPedId(), false) - vector3(pos.x, pos.y, pos.z)) < radius then
         local onScreen, _x, _y = World3dToScreen2d(pos.x,pos.y,pos.z)
-        local p = GetEntityCoords(PlayerPedId(), false)
-        local distance = GetDistanceBetweenCoords(p.x, p.y, p.z, pos.x,pos.y,pos.z, 1)
+        local distance = #(GetEntityCoords(PlayerPedId(), false) - vector3(pos.x, pos.y, pos.z))
         local scale = (1 / distance)
         local fov = (1 / GetGameplayCamFov()) * 75
         local scale = scale * fov
@@ -235,8 +232,8 @@ if Config.Components.AntiNoclip then
 
             local newx,newy,newz = table.unpack(GetEntityCoords(ped,true))
             local newPed = PlayerPedId() -- make sure the peds are still the same, otherwise the player probably respawned
-            if GetDistanceBetweenCoords(posx,posy,posz, newx,newy,newz) > 200 and still == IsPedStill(ped) and vel == GetEntitySpeed(ped) and ped == newPed then
-                TriggerServerEvent("Anticheat:NoClip", GetDistanceBetweenCoords(posx,posy,posz, newx,newy,newz))
+            if #(vector3(posx, posy, posz) - vector3(newx, newy, newz)) > 200 and still == IsPedStill(ped) and vel == GetEntitySpeed(ped) and ped == newPed then
+                TriggerServerEvent("Anticheat:NoClip", #(vector3(posx, posy, posz) - vector3(newx, newy, newz)))
             end
         end
     end)
