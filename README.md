@@ -3,14 +3,6 @@
 ## Jared's Developer Community [Discord]
 [![Developer Discord](https://discordapp.com/api/guilds/597445834153525298/widget.png?style=banner4)](https://discord.com/invite/WjB5VFz)
 
-## fiveguard.net
-For better **paid anticheat** check out **https://store.fiveguard.ac/**.
-
-We are **able to provide** this **free product** because of help of **https://fiveguard.net/**.
-
-**fiveguard is best fivem anticheat**
-<hr />
-
 ## Badger-Anticheat
 Badger's Official Anticheat [code inspirations from DevLanceGood and Bluethefurry on GitHub]
 
